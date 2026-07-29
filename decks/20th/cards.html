@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanon-Quartett &mdash; The 20th century (Kartendeck)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Titan+One&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Logo-Farben: fest, aendern sich nicht mit dem Karten-Theme */
+    --logo-c1:#ef7130;
+    --logo-c2:#c93a5e;
+    --logo-c3:#ce33b4;
+    --logo-c4:#5b9bd8;
+    --logo-ink:#1a1a1a;
+    --rule:#dce8f2;
+  }
+  *{ box-sizing:border-box; }
+  @page { size: A4; margin: 12mm; }
+  body{
+    margin:0;
+    background:#e9e6df;
+    font-family:'Trebuchet MS', Tahoma, sans-serif;
+  }
+  .toolbar{
+    padding:1rem 1.5rem;
+    font-size:0.85rem;
+    color:#4a4a45;
+  }
+  .toolbar b{ color:#1a1a1a; }
+
+  .sheet{
+    display:grid;
+    grid-template-columns:repeat(3, 220px);
+    justify-content:center;
+    gap:8mm;
+    padding:10mm;
+  }
+
+  /* narrow "bridge" playing-card proportions: 57 x 89 mm — same design as
+     website/mockups/12-website-draft.html (.deck-20th card) */
+  .card{
+    position:relative;
+    width:220px;
+    aspect-ratio:57 / 89;
+    display:flex;
+    flex-direction:column;
+    background:#f8f6f1;
+    border-radius:16px;
+    border:1px solid #e7e2d6;
+    padding:9px 10px 8px;
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.16),
+      0 1px 3px rgba(0,0,0,0.10);
+    color:var(--ink);
+    overflow:hidden;
+    break-inside:avoid;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(120% 70% at 15% 0%, rgba(255,255,255,0.55), transparent 55%);
+  }
+
+  .card-no{
+    position:absolute;
+    top:4px;
+    right:8px;
+    z-index:2;
+    font-size:6px;
+    letter-spacing:0.03em;
+    color:#a09a8c;
+  }
+
+  .card-top{
+    position:relative;
+    flex:0 0 auto;
+    padding-top:9px;
+  }
+  .id-badge{
+    position:absolute;
+    top:-5px;
+    left:0;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#fff8ec;
+    border:1.5px solid var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+    box-shadow:0 2px 4px rgba(0,0,0,0.18);
+  }
+  .kq-slab{
+    display:inline-block;
+    font-family:'Alfa Slab One', serif;
+    font-size:0.8rem;
+    text-align:center;
+    background-image:linear-gradient(90deg,var(--logo-c1) 0%,var(--logo-c2) 35%,var(--logo-c3) 65%,var(--logo-c4) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-stroke:0.8px var(--logo-ink);
+    text-stroke:0.8px var(--logo-ink);
+  }
+  .kq-slab .q{
+    display:inline-block;
+    position:relative;
+    top:0.16em;
+  }
+  .category-bar{
+    background:#fff8ec;
+    color:var(--accent);
+    border:1.5px solid var(--accent);
+    border-radius:11px;
+    padding:6px 6px 6px 35px;
+    font-family:'Titan One', cursive;
+    font-size:0.48rem;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:1.15;
+    white-space:nowrap;
+  }
+
+  .photo{
+    flex:1 1 auto;
+    min-height:0;
+    margin:8px 0 6px;
+    border:2.3px solid var(--accent);
+    border-radius:3px;
+    overflow:hidden;
+    position:relative;
+  }
+  .photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 6%;
+    display:block;
+  }
+  .photo-credit{
+    position:absolute;
+    right:1px;
+    top:3px;
+    bottom:3px;
+    display:flex;
+    flex-direction:row;
+    gap:2px;
+    z-index:2;
+  }
+  .photo-credit-license,
+  .photo-credit-url{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    display:flex;
+    align-items:center;
+    font-size:3.6px;
+    letter-spacing:0.01em;
+    color:rgba(255,255,255,0.92);
+    text-decoration:none;
+    text-shadow:0 0 2px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);
+    white-space:nowrap;
+  }
+  .photo-credit-license{
+    font-weight:700;
+  }
+  .photo-credit-url:hover{
+    text-decoration:underline;
+  }
+  .photo-placeholder{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--rule);
+    color:var(--ink-soft);
+    font-family:'Titan One', cursive;
+    font-size:0.6rem;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    text-align:center;
+  }
+
+  .title{
+    flex:0 0 auto;
+    margin:0 0 2px;
+    font-family:'Titan One', cursive;
+    font-size:0.62rem;
+    font-weight:400;
+  }
+  hr{
+    flex:0 0 auto;
+    border:none;
+    border-top:1px solid var(--rule);
+    margin:0 0 2px;
+  }
+
+  .stats{
+    flex:0 0 auto;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .stats li{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:0.3rem;
+    padding:3px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:0.56rem;
+  }
+  .stats li:last-child{
+    border-bottom:none;
+  }
+  .stats li span{
+    font-weight:700;
+    color:var(--ink-soft);
+  }
+  .stats li b{
+    font-weight:500;
+    font-size:0.64rem;
+    white-space:nowrap;
+  }
+
+  /* Deck-Signature-Farben, wie in mockups/12-website-draft.html */
+  .deck-20th{ --accent:#5b9bd8; --ink:#235d95; --ink-soft:#4f84b8; --rule:#dce8f2; }
+
+  @media print{
+    .toolbar{ display:none; }
+    body{ background:#fff; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>Kanon-Quartett &mdash; The 20th century</b> &middot; 32 Karten &middot;
+  erzeugt von <code>generate_20th_cards.py</code> &middot;
+  zum Drucken: Browser-Druckdialog &rarr; "Als PDF speichern"
+</div>
+
+<div class="sheet">
+      <div class="card deck-20th">
+        <span class="card-no">01/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/01_grass-gunter.jpg" alt="Günter Grass" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY 2.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:G%C3%BCnter_Grass_auf_dem_Blauen_Sofa.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Günter_Gr…</a>
+          </div>
+        </div>
+        <h2 class="title">Günter Grass</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>180</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>36</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.685</b></li>
+          <li><span>Wikipedia Pageviews</span><b>984.546</b></li>
+          <li><span>Alter</span><b>88</b></li>
+          <li><span>Geburtsjahr</span><b>1927</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">02/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/02_handke-peter.jpg" alt="Peter Handke" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Peter-handke.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Peter-han…</a>
+          </div>
+        </div>
+        <h2 class="title">Peter Handke</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>160</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>34</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.226</b></li>
+          <li><span>Wikipedia Pageviews</span><b>614.780</b></li>
+          <li><span>Alter</span><b>84</b></li>
+          <li><span>Geburtsjahr</span><b>1942</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>11</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">03/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/03_bachmann-ingeborg.jpg" alt="Ingeborg Bachmann" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Ingeborg_Bachmann_Portrait.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ingeborg_…</a>
+          </div>
+        </div>
+        <h2 class="title">Ingeborg Bachmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>142</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>38</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.557</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.068.397</b></li>
+          <li><span>Alter</span><b>47</b></li>
+          <li><span>Geburtsjahr</span><b>1926</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">04/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/04_wolf-christa.jpg" alt="Christa Wolf" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-B0509-0010-005,_Christa_Wolf.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Christa Wolf</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>126</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>37</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.043</b></li>
+          <li><span>Wikipedia Pageviews</span><b>364.333</b></li>
+          <li><span>Alter</span><b>82</b></li>
+          <li><span>Geburtsjahr</span><b>1929</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">05/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/05_jelinek-elfriede.jpg" alt="Elfriede Jelinek" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Elfriede_jelinek_2004_small_cropped.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Elfriede_…</a>
+          </div>
+        </div>
+        <h2 class="title">Elfriede Jelinek</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>104</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>35</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.516</b></li>
+          <li><span>Wikipedia Pageviews</span><b>612.006</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1946</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">06/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/06_bernhard-thomas.jpg" alt="Thomas Bernhard" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Thomas_Bernhard_(1987).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Thomas_Be…</a>
+          </div>
+        </div>
+        <h2 class="title">Thomas Bernhard</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>96</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>37</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.498</b></li>
+          <li><span>Wikipedia Pageviews</span><b>631.863</b></li>
+          <li><span>Alter</span><b>58</b></li>
+          <li><span>Geburtsjahr</span><b>1931</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">07/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/07_boll-heinrich.jpg" alt="Heinrich Böll" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_B_145_Bild-F062164-0004,_Bonn,_Heinrich_B%C3%B6ll.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Heinrich Böll</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>92</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>30</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>565</b></li>
+          <li><span>Wikipedia Pageviews</span><b>853.529</b></li>
+          <li><span>Alter</span><b>68</b></li>
+          <li><span>Geburtsjahr</span><b>1917</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">08/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/08_johnson-uwe.jpg" alt="Uwe Johnson" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:GuestrowUweJohnsonDetail.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:GuestrowU…</a>
+          </div>
+        </div>
+        <h2 class="title">Uwe Johnson</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>86</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>32</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>734</b></li>
+          <li><span>Wikipedia Pageviews</span><b>244.816</b></li>
+          <li><span>Alter</span><b>50</b></li>
+          <li><span>Geburtsjahr</span><b>1934</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>1</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">09/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/09_seghers-anna.jpg" alt="Anna Seghers" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Anna_Seghers_(Bundesarchiv-Bild_183-F0114-0204-003)_%E2%80%93_retouched_by_Carschten.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Anna_Segh…</a>
+          </div>
+        </div>
+        <h2 class="title">Anna Seghers</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>86</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>33</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>835</b></li>
+          <li><span>Wikipedia Pageviews</span><b>412.958</b></li>
+          <li><span>Alter</span><b>83</b></li>
+          <li><span>Geburtsjahr</span><b>1900</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">10/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/10_schmidt-arno.jpg" alt="Arno Schmidt" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:KueheinHalbtrauer.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:KueheinHa…</a>
+          </div>
+        </div>
+        <h2 class="title">Arno Schmidt</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>84</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>21</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.078</b></li>
+          <li><span>Wikipedia Pageviews</span><b>271.044</b></li>
+          <li><span>Alter</span><b>65</b></li>
+          <li><span>Geburtsjahr</span><b>1914</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">11/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/11_frisch-max.jpg" alt="Max Frisch" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:ETH-BIB-Max_Frisch-Com_C20-015-023-001.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:ETH-BIB-M…</a>
+          </div>
+        </div>
+        <h2 class="title">Max Frisch</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>84</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>36</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>684</b></li>
+          <li><span>Wikipedia Pageviews</span><b>876.551</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1911</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">12/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/12_weiss-peter.jpg" alt="Peter Weiss" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Peter_Weiss_1982.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Peter_Wei…</a>
+          </div>
+        </div>
+        <h2 class="title">Peter Weiss</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>81</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>32</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>636</b></li>
+          <li><span>Wikipedia Pageviews</span><b>150.088</b></li>
+          <li><span>Alter</span><b>66</b></li>
+          <li><span>Geburtsjahr</span><b>1916</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>12</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">13/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/13_muller-heiner.jpg" alt="Heiner Müller" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-1989-1104-047,_Berlin,_Demonstration,_Rede_Heiner_M%C3%BCller.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Heiner Müller</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>76</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>31</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>883</b></li>
+          <li><span>Wikipedia Pageviews</span><b>276.966</b></li>
+          <li><span>Alter</span><b>66</b></li>
+          <li><span>Geburtsjahr</span><b>1929</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">14/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/14_celan-paul.jpg" alt="Paul Celan" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Paul_Celan_(1938).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Paul_Cela…</a>
+          </div>
+        </div>
+        <h2 class="title">Paul Celan</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>71</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>31</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>2.287</b></li>
+          <li><span>Wikipedia Pageviews</span><b>484.636</b></li>
+          <li><span>Alter</span><b>50</b></li>
+          <li><span>Geburtsjahr</span><b>1920</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">15/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/15_durrenmatt-friedrich.jpg" alt="Friedrich Dürrenmatt" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Friedrich_duerrenmatt_19890427.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Friedrich…</a>
+          </div>
+        </div>
+        <h2 class="title">Friedrich Dürrenmatt</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>65</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>35</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>669</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.151.367</b></li>
+          <li><span>Alter</span><b>69</b></li>
+          <li><span>Geburtsjahr</span><b>1921</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>9</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">16/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/16_strau-botho.jpg" alt="Botho Strauß" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Oliver_Mark_-_Botho_Strau%C3%9F,_Uckermark_2007_(2).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Oliver_Ma…</a>
+          </div>
+        </div>
+        <h2 class="title">Botho Strauß</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>62</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>24</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>308</b></li>
+          <li><span>Wikipedia Pageviews</span><b>159.976</b></li>
+          <li><span>Alter</span><b>82</b></li>
+          <li><span>Geburtsjahr</span><b>1944</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>8</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">17/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/17_muller-herta.jpg" alt="Herta Müller" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Herta_M%C3%BCller_Brucknerhaus_Linz_2025_BHO-4188.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Herta_Mül…</a>
+          </div>
+        </div>
+        <h2 class="title">Herta Müller</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>57</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>21</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>658</b></li>
+          <li><span>Wikipedia Pageviews</span><b>282.386</b></li>
+          <li><span>Alter</span><b>73</b></li>
+          <li><span>Geburtsjahr</span><b>1953</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">18/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/18_horvath-odon-von.jpg" alt="Ödön von Horváth" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:%C3%96d%C3%B6n_von_Horv%C3%A1th.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ödön_von_…</a>
+          </div>
+        </div>
+        <h2 class="title">Ödön von Horváth</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>55</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>25</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>311</b></li>
+          <li><span>Wikipedia Pageviews</span><b>483.196</b></li>
+          <li><span>Alter</span><b>37</b></li>
+          <li><span>Geburtsjahr</span><b>1901</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">19/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/19_jandl-ernst.jpg" alt="Ernst Jandl" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Ernst_Jandl,_public_reading,_1974-11,_Vienna,_Austria.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ernst_Jan…</a>
+          </div>
+        </div>
+        <h2 class="title">Ernst Jandl</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>46</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>27</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>300</b></li>
+          <li><span>Wikipedia Pageviews</span><b>209.778</b></li>
+          <li><span>Alter</span><b>75</b></li>
+          <li><span>Geburtsjahr</span><b>1925</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>9</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">20/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">Wolfgang Koeppen</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>45</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>30</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>448</b></li>
+          <li><span>Wikipedia Pageviews</span><b>131.697</b></li>
+          <li><span>Alter</span><b>90</b></li>
+          <li><span>Geburtsjahr</span><b>1906</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">21/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/21_enzensberger-hans-magnus.jpg" alt="Hans Magnus Enzensberger" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Hans_Magnus_Enzensberger_T%C3%BCbingen_November_2013.JPG" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Hans_Magn…</a>
+          </div>
+        </div>
+        <h2 class="title">Hans Magnus Enzensberger</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>45</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>26</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>401</b></li>
+          <li><span>Wikipedia Pageviews</span><b>490.780</b></li>
+          <li><span>Alter</span><b>93</b></li>
+          <li><span>Geburtsjahr</span><b>1929</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">22/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/22_mann-klaus.jpg" alt="Klaus Mann" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Klaus_Mann.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Klaus_Man…</a>
+          </div>
+        </div>
+        <h2 class="title">Klaus Mann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>43</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>7</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>412</b></li>
+          <li><span>Wikipedia Pageviews</span><b>509.536</b></li>
+          <li><span>Alter</span><b>43</b></li>
+          <li><span>Geburtsjahr</span><b>1906</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">23/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/23_walser-martin.jpg" alt="Martin Walser" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Martin_Walser_Frankfurter_Buchmesse_2013_1.JPG" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Martin_Wa…</a>
+          </div>
+        </div>
+        <h2 class="title">Martin Walser</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>42</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>21</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>611</b></li>
+          <li><span>Wikipedia Pageviews</span><b>879.954</b></li>
+          <li><span>Alter</span><b>96</b></li>
+          <li><span>Geburtsjahr</span><b>1927</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">24/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">Marieluise Fleißer</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>38</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>23</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>145</b></li>
+          <li><span>Wikipedia Pageviews</span><b>70.243</b></li>
+          <li><span>Alter</span><b>73</b></li>
+          <li><span>Geburtsjahr</span><b>1901</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">25/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">Ilse Aichinger</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>37</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>19</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>372</b></li>
+          <li><span>Wikipedia Pageviews</span><b>181.736</b></li>
+          <li><span>Alter</span><b>95</b></li>
+          <li><span>Geburtsjahr</span><b>1921</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">26/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/26_kracht-christian.jpg" alt="Christian Kracht" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Christian_Kracht_2025_-_1.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Christian…</a>
+          </div>
+        </div>
+        <h2 class="title">Christian Kracht</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>36</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>24</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>465</b></li>
+          <li><span>Wikipedia Pageviews</span><b>500.903</b></li>
+          <li><span>Alter</span><b>60</b></li>
+          <li><span>Geburtsjahr</span><b>1966</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">27/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/27_brinkmann-rolf-dieter.jpg" alt="Rolf Dieter Brinkmann" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Rdb.selfmade.100607.wisc.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Rdb.selfm…</a>
+          </div>
+        </div>
+        <h2 class="title">Rolf Dieter Brinkmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>34</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>19</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>297</b></li>
+          <li><span>Wikipedia Pageviews</span><b>88.247</b></li>
+          <li><span>Alter</span><b>35</b></li>
+          <li><span>Geburtsjahr</span><b>1940</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">28/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/28_mayrocker-friederike.jpg" alt="Friederike Mayröcker" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 2.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Mayr%C3%B6cker_Friederike-5784_(17828490214).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Mayröcker…</a>
+          </div>
+        </div>
+        <h2 class="title">Friederike Mayröcker</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>34</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>16</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>331</b></li>
+          <li><span>Wikipedia Pageviews</span><b>196.366</b></li>
+          <li><span>Alter</span><b>97</b></li>
+          <li><span>Geburtsjahr</span><b>1924</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">29/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/29_kehlmann-daniel.jpg" alt="Daniel Kehlmann" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:MKr343518_Daniel_Kehlmann_(Frankfurter_Buchmesse_2023).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:MKr343518…</a>
+          </div>
+        </div>
+        <h2 class="title">Daniel Kehlmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>32</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>6</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>360</b></li>
+          <li><span>Wikipedia Pageviews</span><b>604.047</b></li>
+          <li><span>Alter</span><b>51</b></li>
+          <li><span>Geburtsjahr</span><b>1975</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">30/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">Alfred Andersch</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>31</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>12</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>206</b></li>
+          <li><span>Wikipedia Pageviews</span><b>149.465</b></li>
+          <li><span>Alter</span><b>66</b></li>
+          <li><span>Geburtsjahr</span><b>1914</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">31/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck3_20th/31_borchert-wolfgang.jpg" alt="Wolfgang Borchert" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Wolfgang_Borchert_-_Letztes_Foto_als_Zivilist_im_Sommer_1941.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Wolfgang_…</a>
+          </div>
+        </div>
+        <h2 class="title">Wolfgang Borchert</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>31</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>17</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>175</b></li>
+          <li><span>Wikipedia Pageviews</span><b>825.918</b></li>
+          <li><span>Alter</span><b>26</b></li>
+          <li><span>Geburtsjahr</span><b>1921</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-20th">
+        <span class="card-no">32/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The 20th century</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">W. G. Sebald</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>30</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>21</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.488</b></li>
+          <li><span>Wikipedia Pageviews</span><b>153.311</b></li>
+          <li><span>Alter</span><b>57</b></li>
+          <li><span>Geburtsjahr</span><b>1944</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+</div>
+
+</body>
+</html>

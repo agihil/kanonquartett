@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanon-Quartett &mdash; The Top 32 (Kartendeck)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Titan+One&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Logo-Farben: fest, aendern sich nicht mit dem Karten-Theme */
+    --logo-c1:#ef7130;
+    --logo-c2:#c93a5e;
+    --logo-c3:#ce33b4;
+    --logo-c4:#5b9bd8;
+    --logo-ink:#1a1a1a;
+    --rule:#f6e3f0;
+  }
+  *{ box-sizing:border-box; }
+  @page { size: A4; margin: 12mm; }
+  body{
+    margin:0;
+    background:#e9e6df;
+    font-family:'Trebuchet MS', Tahoma, sans-serif;
+  }
+  .toolbar{
+    padding:1rem 1.5rem;
+    font-size:0.85rem;
+    color:#4a4a45;
+  }
+  .toolbar b{ color:#1a1a1a; }
+
+  .sheet{
+    display:grid;
+    grid-template-columns:repeat(3, 220px);
+    justify-content:center;
+    gap:8mm;
+    padding:10mm;
+  }
+
+  /* narrow "bridge" playing-card proportions: 57 x 89 mm — same design as
+     website/mockups/12-website-draft.html (.deck-top32 card) */
+  .card{
+    position:relative;
+    width:220px;
+    aspect-ratio:57 / 89;
+    display:flex;
+    flex-direction:column;
+    background:#f8f6f1;
+    border-radius:16px;
+    border:1px solid #e7e2d6;
+    padding:9px 10px 8px;
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.16),
+      0 1px 3px rgba(0,0,0,0.10);
+    color:var(--ink);
+    overflow:hidden;
+    break-inside:avoid;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(120% 70% at 15% 0%, rgba(255,255,255,0.55), transparent 55%);
+  }
+
+  .card-no{
+    position:absolute;
+    top:4px;
+    right:8px;
+    z-index:2;
+    font-size:6px;
+    letter-spacing:0.03em;
+    color:#a09a8c;
+  }
+
+  .card-top{
+    position:relative;
+    flex:0 0 auto;
+    padding-top:9px;
+  }
+  .id-badge{
+    position:absolute;
+    top:-5px;
+    left:0;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#fff8ec;
+    border:1.5px solid var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+    box-shadow:0 2px 4px rgba(0,0,0,0.18);
+  }
+  .kq-slab{
+    display:inline-block;
+    font-family:'Alfa Slab One', serif;
+    font-size:0.8rem;
+    text-align:center;
+    background-image:linear-gradient(90deg,var(--logo-c1) 0%,var(--logo-c2) 35%,var(--logo-c3) 65%,var(--logo-c4) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-stroke:0.8px var(--logo-ink);
+    text-stroke:0.8px var(--logo-ink);
+  }
+  .kq-slab .q{
+    display:inline-block;
+    position:relative;
+    top:0.16em;
+  }
+  .category-bar{
+    background:#fff8ec;
+    color:var(--accent);
+    border:1.5px solid var(--accent);
+    border-radius:11px;
+    padding:6px 6px 6px 35px;
+    font-family:'Titan One', cursive;
+    font-size:0.48rem;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:1.15;
+    white-space:nowrap;
+  }
+
+  .photo{
+    flex:1 1 auto;
+    min-height:0;
+    margin:8px 0 6px;
+    border:2.3px solid var(--accent);
+    border-radius:3px;
+    overflow:hidden;
+    position:relative;
+  }
+  .photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 22%;
+    display:block;
+  }
+  .photo-credit{
+    position:absolute;
+    right:1px;
+    top:3px;
+    bottom:3px;
+    display:flex;
+    flex-direction:row;
+    gap:2px;
+    z-index:2;
+  }
+  .photo-credit-license,
+  .photo-credit-url{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    display:flex;
+    align-items:center;
+    font-size:3.6px;
+    letter-spacing:0.01em;
+    color:rgba(255,255,255,0.92);
+    text-decoration:none;
+    text-shadow:0 0 2px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);
+    white-space:nowrap;
+  }
+  .photo-credit-license{
+    font-weight:700;
+  }
+  .photo-credit-url:hover{
+    text-decoration:underline;
+  }
+
+  .title{
+    flex:0 0 auto;
+    margin:0 0 2px;
+    font-family:'Titan One', cursive;
+    font-size:0.62rem;
+    font-weight:400;
+  }
+  hr{
+    flex:0 0 auto;
+    border:none;
+    border-top:1px solid var(--rule);
+    margin:0 0 2px;
+  }
+
+  .stats{
+    flex:0 0 auto;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .stats li{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:0.3rem;
+    padding:3px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:0.56rem;
+  }
+  .stats li:last-child{
+    border-bottom:none;
+  }
+  .stats li span{
+    font-weight:700;
+    color:var(--ink-soft);
+  }
+  .stats li b{
+    font-weight:500;
+    font-size:0.64rem;
+    white-space:nowrap;
+  }
+
+  /* Deck-Signature-Farben, wie in mockups/12-website-draft.html */
+  .deck-top32{ --accent:#ce33b4; --ink:#8b2379; --ink-soft:#ad2b97; --rule:#f6e3f0; }
+
+  @media print{
+    .toolbar{ display:none; }
+    body{ background:#fff; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>Kanon-Quartett &mdash; The Top 32</b> &middot; 32 Karten &middot;
+  erzeugt von <code>generate_top32_cards.py</code> &middot;
+  zum Drucken: Browser-Druckdialog &rarr; "Als PDF speichern"
+</div>
+
+<div class="sheet">
+      <div class="card deck-top32">
+        <span class="card-no">01/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/01_goethe-johann-wolfgang-von.jpg" alt="Johann Wolfgang von Goethe">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Goethe_(Stieler_1828).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Goethe_(S…</a>
+          </div>
+        </div>
+        <h2 class="title">Johann Wolfgang von Goethe</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>1.000</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>10.227</b></li>
+          <li><span>Wikipedia Pageviews</span><b>3.648.043</b></li>
+          <li><span>Alter</span><b>83</b></li>
+          <li><span>Geburtsjahr</span><b>1749</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>8</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">02/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/02_schiller-friedrich.jpg" alt="Friedrich Schiller">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Friedrich_Schiller_by_Ludovike_Simanowiz.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Friedrich…</a>
+          </div>
+        </div>
+        <h2 class="title">Friedrich Schiller</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>535</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>3.890</b></li>
+          <li><span>Wikipedia Pageviews</span><b>2.042.583</b></li>
+          <li><span>Alter</span><b>46</b></li>
+          <li><span>Geburtsjahr</span><b>1759</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>8</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">03/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/03_kleist-heinrich-von.jpg" alt="Heinrich von Kleist">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Heinrich_von_Kleist2.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Heinrich_…</a>
+          </div>
+        </div>
+        <h2 class="title">Heinrich von Kleist</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>433</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>3.334</b></li>
+          <li><span>Wikipedia Pageviews</span><b>802.148</b></li>
+          <li><span>Alter</span><b>34</b></li>
+          <li><span>Geburtsjahr</span><b>1777</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">04/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/04_brecht-bertolt.jpg" alt="Bertolt Brecht">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-W0409-300,_Bertolt_Brecht.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Bertolt Brecht</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>414</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>3.179</b></li>
+          <li><span>Wikipedia Pageviews</span><b>2.315.455</b></li>
+          <li><span>Alter</span><b>58</b></li>
+          <li><span>Geburtsjahr</span><b>1898</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>10</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">05/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/05_mann-thomas.jpg" alt="Thomas Mann">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Thomas_Mann_1929.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Thomas_Ma…</a>
+          </div>
+        </div>
+        <h2 class="title">Thomas Mann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>322</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>4.798</b></li>
+          <li><span>Wikipedia Pageviews</span><b>2.329.343</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1875</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">06/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/06_kafka-franz.jpg" alt="Franz Kafka">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Franz_Kafka,_1923.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Franz_Kaf…</a>
+          </div>
+        </div>
+        <h2 class="title">Franz Kafka</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>313</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>41</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>4.864</b></li>
+          <li><span>Wikipedia Pageviews</span><b>3.932.249</b></li>
+          <li><span>Alter</span><b>41</b></li>
+          <li><span>Geburtsjahr</span><b>1883</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">07/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/07_lessing-gotthold-ephraim.png" alt="Gotthold Ephraim Lessing">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Gotthold_Ephraim_Lessing.PNG" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Gotthold_…</a>
+          </div>
+        </div>
+        <h2 class="title">Gotthold Ephraim Lessing</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>311</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.723</b></li>
+          <li><span>Wikipedia Pageviews</span><b>921.520</b></li>
+          <li><span>Alter</span><b>52</b></li>
+          <li><span>Geburtsjahr</span><b>1729</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">08/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/08_hoffmann-e-t-a.jpg" alt="E. T. A. Hoffmann">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:E._T._A._Hoffmann,_autorretrato.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:E._T._A._…</a>
+          </div>
+        </div>
+        <h2 class="title">E. T. A. Hoffmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>293</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>3.016</b></li>
+          <li><span>Wikipedia Pageviews</span><b>936.921</b></li>
+          <li><span>Alter</span><b>46</b></li>
+          <li><span>Geburtsjahr</span><b>1776</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">09/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/09_heine-heinrich.jpg" alt="Heinrich Heine">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Heinrich_Heine-Oppenheim.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Heinrich_…</a>
+          </div>
+        </div>
+        <h2 class="title">Heinrich Heine</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>267</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>37</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>2.460</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.542.075</b></li>
+          <li><span>Alter</span><b>59</b></li>
+          <li><span>Geburtsjahr</span><b>1797</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>9</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">10/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/10_hofmannsthal-hugo-von.jpg" alt="Hugo von Hofmannsthal">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Nicola_Perscheid_-_Hugo_von_Hofmannsthal_1910.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Nicola_Pe…</a>
+          </div>
+        </div>
+        <h2 class="title">Hugo von Hofmannsthal</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>222</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>38</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.441</b></li>
+          <li><span>Wikipedia Pageviews</span><b>529.308</b></li>
+          <li><span>Alter</span><b>55</b></li>
+          <li><span>Geburtsjahr</span><b>1874</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">11/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/11_fontane-theodor.jpg" alt="Theodor Fontane">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Theodor_Fontane_Breitbach.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Theodor_F…</a>
+          </div>
+        </div>
+        <h2 class="title">Theodor Fontane</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>218</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>2.380</b></li>
+          <li><span>Wikipedia Pageviews</span><b>978.643</b></li>
+          <li><span>Alter</span><b>79</b></li>
+          <li><span>Geburtsjahr</span><b>1819</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>12</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">12/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/12_holderlin-friedrich.jpg" alt="Friedrich Hölderlin">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:FK_Hiemer_-_Friedrich_H%C3%B6lderlin_(Pastell_1792).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:FK_Hiemer…</a>
+          </div>
+        </div>
+        <h2 class="title">Friedrich Hölderlin</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>204</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>34</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>2.137</b></li>
+          <li><span>Wikipedia Pageviews</span><b>586.914</b></li>
+          <li><span>Alter</span><b>73</b></li>
+          <li><span>Geburtsjahr</span><b>1770</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">13/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/13_rilke-rainer-maria.jpg" alt="Rainer Maria Rilke">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Rainer_Maria_Rilke_1900.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Rainer_Ma…</a>
+          </div>
+        </div>
+        <h2 class="title">Rainer Maria Rilke</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>187</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>36</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>2.322</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.300.434</b></li>
+          <li><span>Alter</span><b>51</b></li>
+          <li><span>Geburtsjahr</span><b>1875</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">14/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/14_grass-gunter.jpg" alt="Günter Grass">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY 2.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:G%C3%BCnter_Grass_auf_dem_Blauen_Sofa.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Günter_Gr…</a>
+          </div>
+        </div>
+        <h2 class="title">Günter Grass</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>180</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>36</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.685</b></li>
+          <li><span>Wikipedia Pageviews</span><b>984.546</b></li>
+          <li><span>Alter</span><b>88</b></li>
+          <li><span>Geburtsjahr</span><b>1927</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">15/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/15_buchner-georg.png" alt="Georg Büchner">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Georg_B%C3%BCchner.png" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Georg_Büc…</a>
+          </div>
+        </div>
+        <h2 class="title">Georg Büchner</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>178</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>41</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.152</b></li>
+          <li><span>Wikipedia Pageviews</span><b>876.301</b></li>
+          <li><span>Alter</span><b>24</b></li>
+          <li><span>Geburtsjahr</span><b>1813</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">16/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/16_stifter-adalbert.jpg" alt="Adalbert Stifter">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Adalbert_Stifter_photo.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Adalbert_…</a>
+          </div>
+        </div>
+        <h2 class="title">Adalbert Stifter</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>171</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>36</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.280</b></li>
+          <li><span>Wikipedia Pageviews</span><b>312.952</b></li>
+          <li><span>Alter</span><b>63</b></li>
+          <li><span>Geburtsjahr</span><b>1805</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">17/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/17_hauptmann-gerhart.jpg" alt="Gerhart Hauptmann">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Scolik_-_Gerhart_Hauptmann.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Scolik_-_…</a>
+          </div>
+        </div>
+        <h2 class="title">Gerhart Hauptmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>168</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>788</b></li>
+          <li><span>Wikipedia Pageviews</span><b>702.284</b></li>
+          <li><span>Alter</span><b>84</b></li>
+          <li><span>Geburtsjahr</span><b>1862</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">18/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/18_handke-peter.jpg" alt="Peter Handke">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Peter-handke.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Peter-han…</a>
+          </div>
+        </div>
+        <h2 class="title">Peter Handke</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>160</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>34</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.226</b></li>
+          <li><span>Wikipedia Pageviews</span><b>614.780</b></li>
+          <li><span>Alter</span><b>84</b></li>
+          <li><span>Geburtsjahr</span><b>1942</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>11</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">19/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/19_tieck-ludwig.jpg" alt="Ludwig Tieck">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Ludwig_Tieck.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ludwig_Ti…</a>
+          </div>
+        </div>
+        <h2 class="title">Ludwig Tieck</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>160</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>34</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>580</b></li>
+          <li><span>Wikipedia Pageviews</span><b>174.913</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1773</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>11</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">20/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/20_eichendorff-joseph-von.jpg" alt="Joseph von Eichendorff">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Joseph_Freiherr_von_Eichendorff_(1841).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Joseph_Fr…</a>
+          </div>
+        </div>
+        <h2 class="title">Joseph von Eichendorff</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>155</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>40</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>666</b></li>
+          <li><span>Wikipedia Pageviews</span><b>680.399</b></li>
+          <li><span>Alter</span><b>69</b></li>
+          <li><span>Geburtsjahr</span><b>1788</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">21/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/21_nietzsche-friedrich.jpg" alt="Friedrich Nietzsche">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Nietzsche187a.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Nietzsche…</a>
+          </div>
+        </div>
+        <h2 class="title">Friedrich Nietzsche</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>149</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>17</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>3.296</b></li>
+          <li><span>Wikipedia Pageviews</span><b>2.218.018</b></li>
+          <li><span>Alter</span><b>56</b></li>
+          <li><span>Geburtsjahr</span><b>1844</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">22/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/22_jean-paul.jpg" alt="Jean Paul">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:RichterJP.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:RichterJP…</a>
+          </div>
+        </div>
+        <h2 class="title">Jean Paul</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>143</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>28</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.154</b></li>
+          <li><span>Wikipedia Pageviews</span><b>349.029</b></li>
+          <li><span>Alter</span><b>62</b></li>
+          <li><span>Geburtsjahr</span><b>1763</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">23/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/23_bachmann-ingeborg.jpg" alt="Ingeborg Bachmann">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Ingeborg_Bachmann_Portrait.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ingeborg_…</a>
+          </div>
+        </div>
+        <h2 class="title">Ingeborg Bachmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>142</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>38</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.557</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.068.397</b></li>
+          <li><span>Alter</span><b>47</b></li>
+          <li><span>Geburtsjahr</span><b>1926</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">24/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/24_gryphius-andreas.jpg" alt="Andreas Gryphius">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Andreas_Gryphius_1.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Andreas_G…</a>
+          </div>
+        </div>
+        <h2 class="title">Andreas Gryphius</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>141</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>38</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>288</b></li>
+          <li><span>Wikipedia Pageviews</span><b>201.276</b></li>
+          <li><span>Alter</span><b>48</b></li>
+          <li><span>Geburtsjahr</span><b>1616</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">25/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/25_musil-robert.jpg" alt="Robert Musil">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Musil.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Musil.jpg</a>
+          </div>
+        </div>
+        <h2 class="title">Robert Musil</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>140</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>39</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.689</b></li>
+          <li><span>Wikipedia Pageviews</span><b>375.916</b></li>
+          <li><span>Alter</span><b>62</b></li>
+          <li><span>Geburtsjahr</span><b>1880</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">26/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/26_doblin-alfred.jpg" alt="Alfred Döblin">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Doeblin_alfred_1946.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Doeblin_a…</a>
+          </div>
+        </div>
+        <h2 class="title">Alfred Döblin</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>140</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>39</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.038</b></li>
+          <li><span>Wikipedia Pageviews</span><b>258.153</b></li>
+          <li><span>Alter</span><b>79</b></li>
+          <li><span>Geburtsjahr</span><b>1878</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">27/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/27_schnitzler-arthur.jpg" alt="Arthur Schnitzler">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Arthur_Schnitzler_von_Carl_Pietzner.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Arthur_Sc…</a>
+          </div>
+        </div>
+        <h2 class="title">Arthur Schnitzler</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>139</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>42</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.168</b></li>
+          <li><span>Wikipedia Pageviews</span><b>528.750</b></li>
+          <li><span>Alter</span><b>69</b></li>
+          <li><span>Geburtsjahr</span><b>1862</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">28/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/28_wieland-christoph-martin.jpg" alt="Christoph Martin Wieland">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Weimar_Anna_Amalia_Bibliothek@C.M._Wieland.JPG" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Weimar_An…</a>
+          </div>
+        </div>
+        <h2 class="title">Christoph Martin Wieland</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>136</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>29</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>808</b></li>
+          <li><span>Wikipedia Pageviews</span><b>300.134</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1733</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">29/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/29_benn-gottfried.jpg" alt="Gottfried Benn">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-1984-1116-500,_Gottfried_Benn-Arzt_und_Schriftsteller.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Gottfried Benn</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>127</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>31</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>884</b></li>
+          <li><span>Wikipedia Pageviews</span><b>439.415</b></li>
+          <li><span>Alter</span><b>70</b></li>
+          <li><span>Geburtsjahr</span><b>1886</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">30/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/30_wolf-christa.jpg" alt="Christa Wolf">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-B0509-0010-005,_Christa_Wolf.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Christa Wolf</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>126</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>37</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.043</b></li>
+          <li><span>Wikipedia Pageviews</span><b>364.333</b></li>
+          <li><span>Alter</span><b>82</b></li>
+          <li><span>Geburtsjahr</span><b>1929</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">31/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/31_herder-johann-gottfried-von.jpg" alt="Johann Gottfried Herder">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Johann_Gottfried_Herder_2.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Johann_Go…</a>
+          </div>
+        </div>
+        <h2 class="title">Johann Gottfried Herder</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>125</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>20</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.406</b></li>
+          <li><span>Wikipedia Pageviews</span><b>436.647</b></li>
+          <li><span>Alter</span><b>59</b></li>
+          <li><span>Geburtsjahr</span><b>1744</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>7</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-top32">
+        <span class="card-no">32/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">The Top 32</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck1_top32/32_keller-gottfried.jpeg" alt="Gottfried Keller">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Gottfried_Keller_1860.jpeg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Gottfried…</a>
+          </div>
+        </div>
+        <h2 class="title">Gottfried Keller</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>119</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>39</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>755</b></li>
+          <li><span>Wikipedia Pageviews</span><b>385.894</b></li>
+          <li><span>Alter</span><b>71</b></li>
+          <li><span>Geburtsjahr</span><b>1819</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+</div>
+
+</body>
+</html>

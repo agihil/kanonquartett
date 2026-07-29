@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanon-Quartett &mdash; Authors you should know (Kartendeck)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Titan+One&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Logo-Farben: fest, aendern sich nicht mit dem Karten-Theme */
+    --logo-c1:#ef7130;
+    --logo-c2:#c93a5e;
+    --logo-c3:#ce33b4;
+    --logo-c4:#5b9bd8;
+    --logo-ink:#1a1a1a;
+    --rule:#f5e2d2;
+  }
+  *{ box-sizing:border-box; }
+  @page { size: A4; margin: 12mm; }
+  body{
+    margin:0;
+    background:#e9e6df;
+    font-family:'Trebuchet MS', Tahoma, sans-serif;
+  }
+  .toolbar{
+    padding:1rem 1.5rem;
+    font-size:0.85rem;
+    color:#4a4a45;
+  }
+  .toolbar b{ color:#1a1a1a; }
+
+  .sheet{
+    display:grid;
+    grid-template-columns:repeat(3, 220px);
+    justify-content:center;
+    gap:8mm;
+    padding:10mm;
+  }
+
+  /* narrow "bridge" playing-card proportions: 57 x 89 mm — same design as
+     website/mockups/12-website-draft.html (.deck-authors card) */
+  .card{
+    position:relative;
+    width:220px;
+    aspect-ratio:57 / 89;
+    display:flex;
+    flex-direction:column;
+    background:#f8f6f1;
+    border-radius:16px;
+    border:1px solid #e7e2d6;
+    padding:9px 10px 8px;
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.16),
+      0 1px 3px rgba(0,0,0,0.10);
+    color:var(--ink);
+    overflow:hidden;
+    break-inside:avoid;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(120% 70% at 15% 0%, rgba(255,255,255,0.55), transparent 55%);
+  }
+
+  .card-no{
+    position:absolute;
+    top:4px;
+    right:8px;
+    z-index:2;
+    font-size:6px;
+    letter-spacing:0.03em;
+    color:#a09a8c;
+  }
+
+  .card-top{
+    position:relative;
+    flex:0 0 auto;
+    padding-top:9px;
+  }
+  .id-badge{
+    position:absolute;
+    top:-5px;
+    left:0;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#fff8ec;
+    border:1.5px solid var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+    box-shadow:0 2px 4px rgba(0,0,0,0.18);
+  }
+  .kq-slab{
+    display:inline-block;
+    font-family:'Alfa Slab One', serif;
+    font-size:0.8rem;
+    text-align:center;
+    background-image:linear-gradient(90deg,var(--logo-c1) 0%,var(--logo-c2) 35%,var(--logo-c3) 65%,var(--logo-c4) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-stroke:0.8px var(--logo-ink);
+    text-stroke:0.8px var(--logo-ink);
+  }
+  .kq-slab .q{
+    display:inline-block;
+    position:relative;
+    top:0.16em;
+  }
+  .category-bar{
+    background:#fff8ec;
+    color:var(--accent);
+    border:1.5px solid var(--accent);
+    border-radius:11px;
+    padding:6px 6px 6px 35px;
+    font-family:'Titan One', cursive;
+    font-size:0.48rem;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:1.15;
+    white-space:nowrap;
+  }
+
+  .photo{
+    flex:1 1 auto;
+    min-height:0;
+    margin:8px 0 6px;
+    border:2.3px solid var(--accent);
+    border-radius:3px;
+    overflow:hidden;
+    position:relative;
+  }
+  .photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 6%;
+    display:block;
+  }
+  .photo-credit{
+    position:absolute;
+    right:1px;
+    top:3px;
+    bottom:3px;
+    display:flex;
+    flex-direction:row;
+    gap:2px;
+    z-index:2;
+  }
+  .photo-credit-license,
+  .photo-credit-url{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    display:flex;
+    align-items:center;
+    font-size:3.6px;
+    letter-spacing:0.01em;
+    color:rgba(255,255,255,0.92);
+    text-decoration:none;
+    text-shadow:0 0 2px rgba(0,0,0,0.8), 0 0 4px rgba(0,0,0,0.6);
+    white-space:nowrap;
+  }
+  .photo-credit-license{
+    font-weight:700;
+  }
+  .photo-credit-url:hover{
+    text-decoration:underline;
+  }
+  .photo-placeholder{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--rule);
+    color:var(--ink-soft);
+    font-family:'Titan One', cursive;
+    font-size:0.6rem;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    text-align:center;
+  }
+
+  .title{
+    flex:0 0 auto;
+    margin:0 0 2px;
+    font-family:'Titan One', cursive;
+    font-size:0.62rem;
+    font-weight:400;
+  }
+  hr{
+    flex:0 0 auto;
+    border:none;
+    border-top:1px solid var(--rule);
+    margin:0 0 2px;
+  }
+
+  .stats{
+    flex:0 0 auto;
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .stats li{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:0.3rem;
+    padding:3px 0;
+    border-bottom:1px solid var(--rule);
+    font-size:0.56rem;
+  }
+  .stats li:last-child{
+    border-bottom:none;
+  }
+  .stats li span{
+    font-weight:700;
+    color:var(--ink-soft);
+  }
+  .stats li b{
+    font-weight:500;
+    font-size:0.64rem;
+    white-space:nowrap;
+  }
+
+  /* Deck-Signature-Farben, wie in mockups/12-website-draft.html */
+  .deck-authors{ --accent:#ef7130; --ink:#a14617; --ink-soft:#c97a4a; --rule:#f5e2d2; }
+
+  @media print{
+    .toolbar{ display:none; }
+    body{ background:#fff; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <b>Kanon-Quartett &mdash; Authors you should know</b> &middot; 32 Karten &middot;
+  erzeugt von <code>generate_authors_cards.py</code> &middot;
+  zum Drucken: Browser-Druckdialog &rarr; "Als PDF speichern"
+</div>
+
+<div class="sheet">
+      <div class="card deck-authors">
+        <span class="card-no">01/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/01_bachmann-ingeborg.jpg" alt="Ingeborg Bachmann" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Ingeborg_Bachmann_Portrait.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ingeborg_…</a>
+          </div>
+        </div>
+        <h2 class="title">Ingeborg Bachmann</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>142</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>38</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.557</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.068.397</b></li>
+          <li><span>Alter</span><b>47</b></li>
+          <li><span>Geburtsjahr</span><b>1926</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">02/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/02_wolf-christa.jpg" alt="Christa Wolf" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-B0509-0010-005,_Christa_Wolf.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bundesarc…</a>
+          </div>
+        </div>
+        <h2 class="title">Christa Wolf</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>126</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>37</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.043</b></li>
+          <li><span>Wikipedia Pageviews</span><b>364.333</b></li>
+          <li><span>Alter</span><b>82</b></li>
+          <li><span>Geburtsjahr</span><b>1929</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">03/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/03_jelinek-elfriede.jpg" alt="Elfriede Jelinek" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Elfriede_jelinek_2004_small_cropped.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Elfriede_…</a>
+          </div>
+        </div>
+        <h2 class="title">Elfriede Jelinek</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>104</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>35</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>1.516</b></li>
+          <li><span>Wikipedia Pageviews</span><b>612.006</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1946</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">04/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/04_seghers-anna.jpg" alt="Anna Seghers" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Anna_Seghers_(Bundesarchiv-Bild_183-F0114-0204-003)_%E2%80%93_retouched_by_Carschten.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Anna_Segh…</a>
+          </div>
+        </div>
+        <h2 class="title">Anna Seghers</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>86</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>33</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>835</b></li>
+          <li><span>Wikipedia Pageviews</span><b>412.958</b></li>
+          <li><span>Alter</span><b>83</b></li>
+          <li><span>Geburtsjahr</span><b>1900</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">05/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/05_droste-hulshoff-annette-von.jpg" alt="Annette von Droste-Hülshoff" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Droste-H%C3%BClshoff_2.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Droste-Hü…</a>
+          </div>
+        </div>
+        <h2 class="title">Annette von Droste-Hülshoff</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>70</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>40</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>557</b></li>
+          <li><span>Wikipedia Pageviews</span><b>785.717</b></li>
+          <li><span>Alter</span><b>51</b></li>
+          <li><span>Geburtsjahr</span><b>1797</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">06/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/06_lasker-schuler-else.jpg" alt="Else Lasker-Schüler" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Else_Lasker-Sch%C3%BCler_1875.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Else_Lask…</a>
+          </div>
+        </div>
+        <h2 class="title">Else Lasker-Schüler</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>68</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>24</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>478</b></li>
+          <li><span>Wikipedia Pageviews</span><b>427.913</b></li>
+          <li><span>Alter</span><b>76</b></li>
+          <li><span>Geburtsjahr</span><b>1869</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">07/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/07_muller-herta.jpg" alt="Herta Müller" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Herta_M%C3%BCller_Brucknerhaus_Linz_2025_BHO-4188.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Herta_Mül…</a>
+          </div>
+        </div>
+        <h2 class="title">Herta Müller</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>57</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>21</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>658</b></li>
+          <li><span>Wikipedia Pageviews</span><b>282.386</b></li>
+          <li><span>Alter</span><b>73</b></li>
+          <li><span>Geburtsjahr</span><b>1953</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">08/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/08_la-roche-sophie-von.jpg" alt="Sophie von La Roche" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:LaRocheMS.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:LaRocheMS…</a>
+          </div>
+        </div>
+        <h2 class="title">Sophie von La Roche</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>50</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>24</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>258</b></li>
+          <li><span>Wikipedia Pageviews</span><b>107.911</b></li>
+          <li><span>Alter</span><b>77</b></li>
+          <li><span>Geburtsjahr</span><b>1730</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>1</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">09/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/09_arnim-bettina-von.jpg" alt="Bettina von Arnim" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Bettina-von-arnim-grimm.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Bettina-v…</a>
+          </div>
+        </div>
+        <h2 class="title">Bettina von Arnim</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>40</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>14</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>360</b></li>
+          <li><span>Wikipedia Pageviews</span><b>285.689</b></li>
+          <li><span>Alter</span><b>74</b></li>
+          <li><span>Geburtsjahr</span><b>1785</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">10/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">Marieluise Fleißer</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>38</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>23</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>145</b></li>
+          <li><span>Wikipedia Pageviews</span><b>70.243</b></li>
+          <li><span>Alter</span><b>73</b></li>
+          <li><span>Geburtsjahr</span><b>1901</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">11/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <div class="photo-placeholder">Bild folgt</div>
+        </div>
+        <h2 class="title">Ilse Aichinger</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>37</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>19</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>372</b></li>
+          <li><span>Wikipedia Pageviews</span><b>181.736</b></li>
+          <li><span>Alter</span><b>95</b></li>
+          <li><span>Geburtsjahr</span><b>1921</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">12/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/12_ebner-eschenbach-marie-von.jpg" alt="Marie von Ebner-Eschenbach" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Blaas_%E2%80%93_Marie_von_Ebner-Eschenbach.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Blaas_–_M…</a>
+          </div>
+        </div>
+        <h2 class="title">Marie von Ebner-Eschenbach</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>34</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>13</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>223</b></li>
+          <li><span>Wikipedia Pageviews</span><b>281.002</b></li>
+          <li><span>Alter</span><b>86</b></li>
+          <li><span>Geburtsjahr</span><b>1830</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">13/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/13_mayrocker-friederike.jpg" alt="Friederike Mayröcker" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 2.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Mayr%C3%B6cker_Friederike-5784_(17828490214).jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Mayröcker…</a>
+          </div>
+        </div>
+        <h2 class="title">Friederike Mayröcker</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>34</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>16</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>331</b></li>
+          <li><span>Wikipedia Pageviews</span><b>196.366</b></li>
+          <li><span>Alter</span><b>97</b></li>
+          <li><span>Geburtsjahr</span><b>1924</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">14/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/14_gottsched-luise-adelgunde-victorie.jpg" alt="Luise Adelgunde Victorie Gottsched" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Gottschedin.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Gottsched…</a>
+          </div>
+        </div>
+        <h2 class="title">Luise Adelgunde Victorie Gottsched</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>28</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>15</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>88</b></li>
+          <li><span>Wikipedia Pageviews</span><b>25.692</b></li>
+          <li><span>Alter</span><b>49</b></li>
+          <li><span>Geburtsjahr</span><b>1713</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">15/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/15_gunderode-karoline-von.jpg" alt="Karoline von Günderrode" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Portr%C3%A4t_von_Karoline_von_G%C3%BCnderrode,_1797.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Porträt_v…</a>
+          </div>
+        </div>
+        <h2 class="title">Karoline von Günderrode</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>25</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>17</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>117</b></li>
+          <li><span>Wikipedia Pageviews</span><b>176.128</b></li>
+          <li><span>Alter</span><b>26</b></li>
+          <li><span>Geburtsjahr</span><b>1780</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">16/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/16_greiffenberg-catharina-regina-von.jpg" alt="Catharina Regina von Greiffenberg" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:CatharinaReginavGreiffenberg_Kopie.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Catharina…</a>
+          </div>
+        </div>
+        <h2 class="title">Catharina Regina von Greiffenberg</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>23</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>7</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>72</b></li>
+          <li><span>Wikipedia Pageviews</span><b>21.422</b></li>
+          <li><span>Alter</span><b>61</b></li>
+          <li><span>Geburtsjahr</span><b>1633</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>1</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">17/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/17_varnhagen-rahel.jpg" alt="Rahel Varnhagen von Ense" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Bild-PD-alt</span>
+            <a class="photo-credit-url" href="https://de.wikipedia.org/wiki/Datei:Daffinger_litho_g_kuestner.jpg" target="_blank" rel="noopener">de.wikipedia.org/wiki/Datei:Daffinger_lit…</a>
+          </div>
+        </div>
+        <h2 class="title">Rahel Varnhagen von Ense</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>23</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>7</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>207</b></li>
+          <li><span>Wikipedia Pageviews</span><b>120.237</b></li>
+          <li><span>Alter</span><b>62</b></li>
+          <li><span>Geburtsjahr</span><b>1771</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>1</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">18/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/18_keun-irmgard.jpg" alt="Irmgard Keun" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Rathausturm_K%C3%B6ln_-_Keun-3437.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Rathaustu…</a>
+          </div>
+        </div>
+        <h2 class="title">Irmgard Keun</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>22</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>19</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>232</b></li>
+          <li><span>Wikipedia Pageviews</span><b>186.927</b></li>
+          <li><span>Alter</span><b>77</b></li>
+          <li><span>Geburtsjahr</span><b>1905</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>1</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">19/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/19_kluger-ruth.jpg" alt="Ruth Klüger" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Ruth_Kl%C3%BCger_beim_Bayerischen_Buchpreis_2016.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Ruth_Klüg…</a>
+          </div>
+        </div>
+        <h2 class="title">Ruth Klüger</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>22</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>11</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>248</b></li>
+          <li><span>Wikipedia Pageviews</span><b>125.724</b></li>
+          <li><span>Alter</span><b>89</b></li>
+          <li><span>Geburtsjahr</span><b>1931</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>5</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">20/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/20_ozdamar-emine-sevgi.jpg" alt="Emine Sevgi Özdamar" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Emine_Sevgi_%C3%96zdamar_2021_02.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Emine_Sev…</a>
+          </div>
+        </div>
+        <h2 class="title">Emine Sevgi Özdamar</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>20</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>11</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>332</b></li>
+          <li><span>Wikipedia Pageviews</span><b>124.427</b></li>
+          <li><span>Alter</span><b>80</b></li>
+          <li><span>Geburtsjahr</span><b>1946</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>6</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">21/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/21_sachs-nelly.jpg" alt="Nelly Sachs" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Nelly_Sachs_1910_repaired.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Nelly_Sac…</a>
+          </div>
+        </div>
+        <h2 class="title">Nelly Sachs</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>16</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>13</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>280</b></li>
+          <li><span>Wikipedia Pageviews</span><b>213.615</b></li>
+          <li><span>Alter</span><b>79</b></li>
+          <li><span>Geburtsjahr</span><b>1891</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">22/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/22_maron-monika.jpg" alt="Monika Maron" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Monika_Maron,_Frankfurter_Buchmesse_2023.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Monika_Ma…</a>
+          </div>
+        </div>
+        <h2 class="title">Monika Maron</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>16</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>7</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>240</b></li>
+          <li><span>Wikipedia Pageviews</span><b>218.858</b></li>
+          <li><span>Alter</span><b>85</b></li>
+          <li><span>Geburtsjahr</span><b>1941</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">23/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/23_roggla-kathrin.jpg" alt="Kathrin Röggla" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Kathrin_R%C3%B6ggla_2023_-_3.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Kathrin_R…</a>
+          </div>
+        </div>
+        <h2 class="title">Kathrin Röggla</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>15</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>6</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>229</b></li>
+          <li><span>Wikipedia Pageviews</span><b>35.182</b></li>
+          <li><span>Alter</span><b>55</b></li>
+          <li><span>Geburtsjahr</span><b>1971</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">24/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/24_zeh-juli.jpg" alt="Juli Zeh" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 4.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Juli_Zeh_-_2018286113231_2018-10-13_Buchmesse_-_1D_X_MK_II_-_0207_-_B70I4023.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Juli_Zeh_…</a>
+          </div>
+        </div>
+        <h2 class="title">Juli Zeh</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>13</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>7</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>322</b></li>
+          <li><span>Wikipedia Pageviews</span><b>1.925.653</b></li>
+          <li><span>Alter</span><b>52</b></li>
+          <li><span>Geburtsjahr</span><b>1974</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">25/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/25_kronauer-brigitte.jpg" alt="Brigitte Kronauer" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY 2.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Brigitte_Kronauer_(2005)_cropped.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Brigitte_…</a>
+          </div>
+        </div>
+        <h2 class="title">Brigitte Kronauer</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>13</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>5</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>99</b></li>
+          <li><span>Wikipedia Pageviews</span><b>37.604</b></li>
+          <li><span>Alter</span><b>79</b></li>
+          <li><span>Geburtsjahr</span><b>1940</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">26/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/26_tawada-yoko.jpg" alt="Yōko Tawada" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY-SA 3.0</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:YokoTawadaP1040207.JPG" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:YokoTawad…</a>
+          </div>
+        </div>
+        <h2 class="title">Yōko Tawada</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>13</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>3</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>499</b></li>
+          <li><span>Wikipedia Pageviews</span><b>37.926</b></li>
+          <li><span>Alter</span><b>66</b></li>
+          <li><span>Geburtsjahr</span><b>1960</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>1</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">27/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/27_auslander-rose.jpg" alt="Rose Ausländer" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Rose_Ausl%C3%A4nder_1918_repaired.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Rose_Ausl…</a>
+          </div>
+        </div>
+        <h2 class="title">Rose Ausländer</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>12</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>8</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>310</b></li>
+          <li><span>Wikipedia Pageviews</span><b>157.764</b></li>
+          <li><span>Alter</span><b>87</b></li>
+          <li><span>Geburtsjahr</span><b>1901</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">28/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/28_andreas-salome-lou.jpg" alt="Lou Andreas-Salomé" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Lou_Andreas-Salom%C3%A9_-_Foto_Atelier_Elvira.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Lou_Andre…</a>
+          </div>
+        </div>
+        <h2 class="title">Lou Andreas-Salomé</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>12</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>1</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>275</b></li>
+          <li><span>Wikipedia Pageviews</span><b>504.868</b></li>
+          <li><span>Alter</span><b>76</b></li>
+          <li><span>Geburtsjahr</span><b>1861</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">29/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/29_kaleko-mascha.jpg" alt="Mascha Kaléko" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Mascha_Kal%C3%A9ko.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Mascha_Ka…</a>
+          </div>
+        </div>
+        <h2 class="title">Mascha Kaléko</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>12</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>9</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>83</b></li>
+          <li><span>Wikipedia Pageviews</span><b>839.550</b></li>
+          <li><span>Alter</span><b>63</b></li>
+          <li><span>Geburtsjahr</span><b>1912</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>2</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">30/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/30_kaschnitz-marie-luise.jpg" alt="Marie Luise Kaschnitz" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">CC BY 3.0 de</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Marie_Luise_Kaschnitz_Bollschweil_Willy_Pragher_1967.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Marie_Lui…</a>
+          </div>
+        </div>
+        <h2 class="title">Marie Luise Kaschnitz</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>10</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>13</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>151</b></li>
+          <li><span>Wikipedia Pageviews</span><b>139.914</b></li>
+          <li><span>Alter</span><b>73</b></li>
+          <li><span>Geburtsjahr</span><b>1901</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">31/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/31_le-fort-gertrud-von.jpg" alt="Gertrud von le Fort" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Gertrud_v_Le_Fort_c1935.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Gertrud_v…</a>
+          </div>
+        </div>
+        <h2 class="title">Gertrud von le Fort</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>10</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>1</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>57</b></li>
+          <li><span>Wikipedia Pageviews</span><b>55.838</b></li>
+          <li><span>Alter</span><b>95</b></li>
+          <li><span>Geburtsjahr</span><b>1876</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>4</b></li>
+        </ul>
+      </div>
+
+      <div class="card deck-authors">
+        <span class="card-no">32/32</span>
+        <div class="card-top">
+          <span class="id-badge"><span class="kq-slab">K<span class="q">Q</span></span></span>
+          <div class="category-bar">Authors you should know</div>
+        </div>
+        <div class="photo">
+          <img src="../../assets/img/deck2_authors/32_schlegel-dorothea-von.jpg" alt="Dorothea Schlegel" style="object-position:50% 6%;">
+          <div class="photo-credit">
+            <span class="photo-credit-license">Public domain</span>
+            <a class="photo-credit-url" href="https://commons.wikimedia.org/wiki/File:Dorothea_Schlegel.jpg" target="_blank" rel="noopener">commons.wikimedia.org/wiki/File:Dorothea_…</a>
+          </div>
+        </div>
+        <h2 class="title">Dorothea Schlegel</h2>
+        <hr>
+        <ul class="stats">
+          <li><span>Kanonscore</span><b>10</b></li>
+          <li><span>Nennungen Uni-Leselisten</span><b>5</b></li>
+          <li><span>Anzahl Forschungstexte</span><b>81</b></li>
+          <li><span>Wikipedia Pageviews</span><b>55.006</b></li>
+          <li><span>Alter</span><b>75</b></li>
+          <li><span>Geburtsjahr</span><b>1764</b></li>
+          <li><span>Anzahl GND-Berufe</span><b>3</b></li>
+        </ul>
+      </div>
+
+</div>
+
+</body>
+</html>
