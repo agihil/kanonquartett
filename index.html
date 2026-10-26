@@ -175,7 +175,8 @@
     width:100%;
     height:100%;
     cursor:pointer;
-    transition:transform 0.6s;
+    /* symmetrische Kurve: die Karte steht genau nach 0.3s quer, passend zum Ausblenden unten */
+    transition:transform 0.6s ease-in-out;
     transform-style:preserve-3d;
   }
   .flip-card.flipped .flip-card-inner{
@@ -190,6 +191,18 @@
   }
   .flip-back{
     transform:rotateY(180deg);
+  }
+  /* Elemente mit eigenen Transforms (z. B. das KQ-Abzeichen) scheinen v. a. in Safari trotz
+     backface-visibility durch: die abgewandte Seite zur Haelfte der Drehung (0.3s) ausblenden. */
+  .flip-front, .flip-back{
+    transition:visibility 0s linear 0.3s;
+  }
+  .flip-back,
+  .flip-card.flipped .flip-front{
+    visibility:hidden;
+  }
+  .flip-card.flipped .flip-back{
+    visibility:visible;
   }
 
   .deck-button{ transition:transform 0.2s ease, box-shadow 0.15s ease; }
@@ -246,59 +259,23 @@
     color:#a09a8c;
   }
 
-  /* ---- Kartenrueckseite ---- */
+  /* ---- Kartenrueckseite: fertiges Bild pro Deck (scripts/export_card_backs.py) ---- */
   .card-back{
     position:absolute;
     inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
     background:#f8f6f1;
     border-radius:16px;
     border:1px solid #e7e2d6;
-    padding:14px;
     box-shadow:
       0 22px 40px rgba(0,0,0,0.22),
       0 3px 8px rgba(0,0,0,0.12);
     overflow:hidden;
   }
-  .card-back::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background-image:url(assets/black_figure4_rang.png);
-    background-size:cover;
-    background-position:center;
-    opacity:0.12;
-  }
-  .card-back::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background:radial-gradient(120% 70% at 15% 0%, rgba(255,255,255,0.55), transparent 55%);
-  }
-  .logo-mark{
-    position:relative;
-    font-family:'Alfa Slab One', serif;
-    font-size:1.55rem;
-    text-align:center;
-    line-height:1.05;
-    letter-spacing:0.02em;
-  }
-  .logo-mark .fill{
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-    background-image:linear-gradient(90deg,var(--logo-c1) 0%,var(--logo-c2) 35%,var(--logo-c3) 65%,var(--logo-c4) 100%);
-    -webkit-text-stroke:0.9px var(--logo-ink);
-    text-stroke:0.9px var(--logo-ink);
-  }
-  .logo-mark .hollow{
-    color:#fff8ec;
-    -webkit-text-stroke:0.9px var(--logo-ink);
-    text-stroke:0.9px var(--logo-ink);
+  .card-back img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
   }
 
   .card-top{
@@ -606,13 +583,13 @@
     border-color:var(--logo-c2);
     color:#fff8ec;
   }
-  /* Sprung von einer Karte zu ihrem Nachweis: Kaertchen kurz hervorheben */
-  .credit-tile.flash .credit-pic{ animation:credit-flash 1.6s ease; }
-  @keyframes credit-flash{
-    0%, 100%{ box-shadow:0 4px 10px rgba(0,0,0,0.16), 0 1px 3px rgba(0,0,0,0.10); }
-    20%, 60%{ box-shadow:0 0 0 4px var(--logo-c2), 0 8px 18px rgba(0,0,0,0.22); }
+  /* Umdrehbare Karten in den Decks: flacher Schatten wie die uebrigen Deck-Karten */
+  .deck-full .flip-front .card,
+  .deck-full .card-back{
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.16),
+      0 1px 3px rgba(0,0,0,0.10);
   }
-  .deck-full .photo img{ cursor:pointer; }
   @media (max-width:520px){
     .credit-cloud{ gap:20px 10px; }
     .credit-tile{ width:96px; }
@@ -675,10 +652,7 @@
           </div>
           <div class="flip-back">
             <div class="card-back">
-              <div class="logo-mark">
-                <div class="fill">Kanon-</div>
-                <div class="hollow">Quartett</div>
-              </div>
+              <img src="assets/card-back-authors.png" alt="Kartenrückseite Eine andere Top 32">
             </div>
           </div>
         </div>
@@ -713,10 +687,7 @@
           </div>
           <div class="flip-back">
             <div class="card-back">
-              <div class="logo-mark">
-                <div class="fill">Kanon-</div>
-                <div class="hollow">Quartett</div>
-              </div>
+              <img src="assets/card-back-top32.png" alt="Kartenrückseite Top 32">
             </div>
           </div>
         </div>
@@ -751,10 +722,7 @@
           </div>
           <div class="flip-back">
             <div class="card-back">
-              <div class="logo-mark">
-                <div class="fill">Kanon-</div>
-                <div class="hollow">Quartett</div>
-              </div>
+              <img src="assets/card-back-20th.png" alt="Kartenrückseite Das 20. Jahrhundert">
             </div>
           </div>
         </div>
@@ -769,12 +737,6 @@
 
 <section class="content-section" id="anleitung">
   <h2>Anleitung</h2>
-  <p>[Spielidee: worum es beim Kanon-Quartett geht, in ein bis zwei S&auml;tzen.]</p>
-  <p>[Vorbereitung: Decks mischen, Karten austeilen, Startspieler bestimmen.]</p>
-  <p>[Spielablauf: eine Kategorie ansagen, Werte vergleichen, wer gewinnt die Karte.]</p>
-  <p>[Besonderheiten: was passiert bei Gleichstand, Sonderregeln pro Deck.]</p>
-  <p>[Spielende &amp; Wertung: wann das Spiel endet, wer gewinnt.]</p>
-  <p>[Mindestalter, Spieleranzahl, Spieldauer.]</p>
   <a class="deck-button" href="#" download>Anleitung herunterladen</a>
 </section>
 
@@ -782,19 +744,12 @@
 
 <section class="content-section" id="about">
   <h2>About this</h2>
-  <p>[Was ist Kanon-Quartett: Kurzbeschreibung des Projekts, Idee und Ziel.]</p>
-  <p>[Welche Daten stecken dahinter: Quellen, Methodik, wie der &bdquo;Kanonscore&ldquo; berechnet wird.]</p>
-  <p>[Wer steht dahinter: Team, Institution, Kontext (z.&nbsp;B. Forschungsprojekt/Konferenz).]</p>
-  <p>[Im Rahmen welcher Publikation/Veranstaltung ist das Projekt entstanden.]</p>
-  <p>[Danksagungen / Mitwirkende / Lizenzhinweise zu Bildern und Daten.]</p>
-  <p>[Kontakt &amp; Zitierhinweis, falls das Projekt referenziert werden soll.]</p>
 </section>
 
 <hr class="section-rule">
 
 <section class="content-section" id="decks" style="max-width:none;">
   <h2>Die Decks</h2>
-  <p class="section-intro">Hier stehen alle Karten aus allen drei Decks zum Nachschlagen &ndash; und zum Selberausdrucken.</p>
 
   <div class="deck-full deck-authors" id="deck-authors">
     <h3>Eine andere Top 32</h3>
@@ -2929,400 +2884,400 @@
 
 <section class="content-section" id="bildnachweise">
   <h2>Bildnachweise</h2>
-  <p>Alle Porträts stammen von Wikimedia Commons. Ein Klick aufs Bild führt zur Quelle, ein Klick auf die Lizenz zum Lizenztext. Wer auf ein Porträt in den Decks klickt, landet hier beim passenden Nachweis.</p>
+  <p>Alle Porträts stammen von Wikimedia Commons.</p>
   <div class="credit-cloud">
     <!-- BILDNACHWEISE:START -->
-    <figure class="credit-tile" id="bild-andreas-salome-lou" data-images="assets/img/deck2_authors/cards/28_andreas-salome-lou.jpg">
+    <figure class="credit-tile" id="bild-andreas-salome-lou">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Lou_Andreas-Salom%C3%A9_-_Foto_Atelier_Elvira.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/28_andreas-salome-lou.jpg" alt="Lou Andreas-Salomé" loading="lazy"></a>
       <figcaption><b>Lou Andreas-Salomé</b><span>Hofatelier Elvira</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-arnim-bettina-von" data-images="assets/img/deck2_authors/cards/09_arnim-bettina-von.jpg">
+    <figure class="credit-tile" id="bild-arnim-bettina-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Bettina-von-arnim-grimm.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/09_arnim-bettina-von.jpg" alt="Bettina von Arnim" loading="lazy"></a>
       <figcaption><b>Bettina von Arnim</b><span>Ludwig Emil Grimm</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-auslander-rose" data-images="assets/img/deck2_authors/cards/27_auslander-rose.jpg">
+    <figure class="credit-tile" id="bild-auslander-rose">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Rose_Ausl%C3%A4nder_1918_repaired.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/27_auslander-rose.jpg" alt="Rose Ausländer" loading="lazy"></a>
       <figcaption><b>Rose Ausländer</b><span>Nachlass Max Scherzer</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-bachmann-ingeborg" data-images="assets/img/deck1_top32/cards/23_bachmann-ingeborg.jpg assets/img/deck2_authors/cards/01_bachmann-ingeborg.jpg assets/img/deck3_20th/cards/03_bachmann-ingeborg.jpg">
+    <figure class="credit-tile" id="bild-bachmann-ingeborg">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Ingeborg_Bachmann_Portrait.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/23_bachmann-ingeborg.jpg" alt="Ingeborg Bachmann" loading="lazy"></a>
       <figcaption><b>Ingeborg Bachmann</b><span>Fritz Peyer</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-benn-gottfried" data-images="assets/img/deck1_top32/cards/29_benn-gottfried.jpg">
+    <figure class="credit-tile" id="bild-benn-gottfried">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-1984-1116-500,_Gottfried_Benn-Arzt_und_Schriftsteller.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/29_benn-gottfried.jpg" alt="Gottfried Benn" loading="lazy"></a>
       <figcaption><b>Gottfried Benn</b><span>Bundesarchiv</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-bernhard-thomas" data-images="assets/img/deck3_20th/cards/06_bernhard-thomas.jpg">
+    <figure class="credit-tile" id="bild-bernhard-thomas">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Thomas_Bernhard_(1987).jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/06_bernhard-thomas.jpg" alt="Thomas Bernhard" loading="lazy"></a>
       <figcaption><b>Thomas Bernhard</b><span>Monozigote</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-boll-heinrich" data-images="assets/img/deck3_20th/cards/07_boll-heinrich.jpg">
+    <figure class="credit-tile" id="bild-boll-heinrich">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_B_145_Bild-F062164-0004,_Bonn,_Heinrich_B%C3%B6ll.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/07_boll-heinrich.jpg" alt="Heinrich Böll" loading="lazy"></a>
       <figcaption><b>Heinrich Böll</b><span>Bundesarchiv, Harald Hoffmann</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-borchert-wolfgang" data-images="assets/img/deck3_20th/cards/31_borchert-wolfgang.jpg">
+    <figure class="credit-tile" id="bild-borchert-wolfgang">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Wolfgang_Borchert_-_Letztes_Foto_als_Zivilist_im_Sommer_1941.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/31_borchert-wolfgang.jpg" alt="Wolfgang Borchert" loading="lazy"></a>
       <figcaption><b>Wolfgang Borchert</b><span>Staats- und Universitätsbibliothek Hamburg Carl von Ossietzky</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-brecht-bertolt" data-images="assets/img/deck1_top32/cards/04_brecht-bertolt.jpg">
+    <figure class="credit-tile" id="bild-brecht-bertolt">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-W0409-300,_Bertolt_Brecht.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/04_brecht-bertolt.jpg" alt="Bertolt Brecht" loading="lazy"></a>
       <figcaption><b>Bertolt Brecht</b><span>Bundesarchiv, Jörg Kolbe</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-brinkmann-rolf-dieter" data-images="assets/img/deck3_20th/cards/27_brinkmann-rolf-dieter.jpg">
+    <figure class="credit-tile" id="bild-brinkmann-rolf-dieter">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Rdb.selfmade.100607.wisc.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/27_brinkmann-rolf-dieter.jpg" alt="Rolf Dieter Brinkmann" loading="lazy"></a>
       <figcaption><b>Rolf Dieter Brinkmann</b><span>Wisc</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-buchner-georg" data-images="assets/img/deck1_top32/cards/15_buchner-georg.jpg">
+    <figure class="credit-tile" id="bild-buchner-georg">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Georg_B%C3%BCchner.png" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/15_buchner-georg.jpg" alt="Georg Büchner" loading="lazy"></a>
       <figcaption><b>Georg Büchner</b><span>Philipp August Joseph Hoffmann</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-celan-paul" data-images="assets/img/deck3_20th/cards/14_celan-paul.jpg">
+    <figure class="credit-tile" id="bild-celan-paul">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Paul_Celan_(1938).jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/14_celan-paul.jpg" alt="Paul Celan" loading="lazy"></a>
       <figcaption><b>Paul Celan</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-doblin-alfred" data-images="assets/img/deck1_top32/cards/26_doblin-alfred.jpg">
+    <figure class="credit-tile" id="bild-doblin-alfred">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Doeblin_alfred_1946.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/26_doblin-alfred.jpg" alt="Alfred Döblin" loading="lazy"></a>
       <figcaption><b>Alfred Döblin</b><span>Pressebild-Verlag Schirner</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-droste-hulshoff-annette-von" data-images="assets/img/deck2_authors/cards/05_droste-hulshoff-annette-von.jpg">
+    <figure class="credit-tile" id="bild-droste-hulshoff-annette-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Droste-H%C3%BClshoff_2.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/05_droste-hulshoff-annette-von.jpg" alt="Annette von Droste-Hülshoff" loading="lazy"></a>
       <figcaption><b>Annette von Droste-Hülshoff</b><span>Johann Sprick</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-durrenmatt-friedrich" data-images="assets/img/deck3_20th/cards/15_durrenmatt-friedrich.jpg">
+    <figure class="credit-tile" id="bild-durrenmatt-friedrich">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Friedrich_duerrenmatt_19890427.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/15_durrenmatt-friedrich.jpg" alt="Friedrich Dürrenmatt" loading="lazy"></a>
       <figcaption><b>Friedrich Dürrenmatt</b><span>Elke Wetzig (elya)</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-ebner-eschenbach-marie-von" data-images="assets/img/deck2_authors/cards/12_ebner-eschenbach-marie-von.jpg">
+    <figure class="credit-tile" id="bild-ebner-eschenbach-marie-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Blaas_%E2%80%93_Marie_von_Ebner-Eschenbach.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/12_ebner-eschenbach-marie-von.jpg" alt="Marie von Ebner-Eschenbach" loading="lazy"></a>
       <figcaption><b>Marie von Ebner-Eschenbach</b><span>Karl von Blaas</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-eichendorff-joseph-von" data-images="assets/img/deck1_top32/cards/20_eichendorff-joseph-von.jpg">
+    <figure class="credit-tile" id="bild-eichendorff-joseph-von">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Joseph_Freiherr_von_Eichendorff_(1841).jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/20_eichendorff-joseph-von.jpg" alt="Joseph von Eichendorff" loading="lazy"></a>
       <figcaption><b>Joseph von Eichendorff</b><span>H.-P. Haack (Foto)</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-enzensberger-hans-magnus" data-images="assets/img/deck3_20th/cards/21_enzensberger-hans-magnus.jpg">
+    <figure class="credit-tile" id="bild-enzensberger-hans-magnus">
       <a class="license-chip" href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener">CC BY 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Hans_Magnus_Enzensberger_T%C3%BCbingen_November_2013.JPG" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/21_enzensberger-hans-magnus.jpg" alt="Hans Magnus Enzensberger" loading="lazy"></a>
       <figcaption><b>Hans Magnus Enzensberger</b><span>Felix König</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-fontane-theodor" data-images="assets/img/deck1_top32/cards/11_fontane-theodor.jpg">
+    <figure class="credit-tile" id="bild-fontane-theodor">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Theodor_Fontane_Breitbach.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/11_fontane-theodor.jpg" alt="Theodor Fontane" loading="lazy"></a>
       <figcaption><b>Theodor Fontane</b><span>Carl Breitbach</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-frisch-max" data-images="assets/img/deck3_20th/cards/11_frisch-max.jpg">
+    <figure class="credit-tile" id="bild-frisch-max">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:ETH-BIB-Max_Frisch-Com_C20-015-023-001.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/11_frisch-max.jpg" alt="Max Frisch" loading="lazy"></a>
       <figcaption><b>Max Frisch</b><span>Comet Photo AG (Zürich)</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-goethe-johann-wolfgang-von" data-images="assets/img/deck1_top32/cards/01_goethe-johann-wolfgang-von.jpg">
+    <figure class="credit-tile" id="bild-goethe-johann-wolfgang-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Goethe_(Stieler_1828).jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/01_goethe-johann-wolfgang-von.jpg" alt="Johann Wolfgang von Goethe" loading="lazy"></a>
       <figcaption><b>Johann Wolfgang von Goethe</b><span>Karl Joseph Stieler</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-gottsched-luise-adelgunde-victorie" data-images="assets/img/deck2_authors/cards/14_gottsched-luise-adelgunde-victorie.jpg">
+    <figure class="credit-tile" id="bild-gottsched-luise-adelgunde-victorie">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Gottschedin.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/14_gottsched-luise-adelgunde-victorie.jpg" alt="Luise Adelgunde Victorie Gottsched" loading="lazy"></a>
       <figcaption><b>Luise Adelgunde Victorie Gottsched</b><span>Elias Gottlob Haussmann</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-grass-gunter" data-images="assets/img/deck1_top32/cards/14_grass-gunter.jpg assets/img/deck3_20th/cards/01_grass-gunter.jpg">
+    <figure class="credit-tile" id="bild-grass-gunter">
       <a class="license-chip" href="https://creativecommons.org/licenses/by/2.0/deed.de" target="_blank" rel="noopener">CC BY 2.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:G%C3%BCnter_Grass_auf_dem_Blauen_Sofa.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/14_grass-gunter.jpg" alt="Günter Grass" loading="lazy"></a>
       <figcaption><b>Günter Grass</b><span>Blaues Sofa</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-greiffenberg-catharina-regina-von" data-images="assets/img/deck2_authors/cards/16_greiffenberg-catharina-regina-von.jpg">
+    <figure class="credit-tile" id="bild-greiffenberg-catharina-regina-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:CatharinaReginavGreiffenberg_Kopie.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/16_greiffenberg-catharina-regina-von.jpg" alt="Catharina Regina von Greiffenberg" loading="lazy"></a>
       <figcaption><b>Catharina Regina von Greiffenberg</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-gryphius-andreas" data-images="assets/img/deck1_top32/cards/24_gryphius-andreas.jpg">
+    <figure class="credit-tile" id="bild-gryphius-andreas">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Andreas_Gryphius_1.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/24_gryphius-andreas.jpg" alt="Andreas Gryphius" loading="lazy"></a>
       <figcaption><b>Andreas Gryphius</b><span>Philipp Kilian</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-gunderode-karoline-von" data-images="assets/img/deck2_authors/cards/15_gunderode-karoline-von.jpg">
+    <figure class="credit-tile" id="bild-gunderode-karoline-von">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Portr%C3%A4t_von_Karoline_von_G%C3%BCnderrode,_1797.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/15_gunderode-karoline-von.jpg" alt="Karoline von Günderode" loading="lazy"></a>
       <figcaption><b>Karoline von Günderode</b><span>Historisches Museum Frankfurt, Horst Ziegenfusz</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-handke-peter" data-images="assets/img/deck1_top32/cards/18_handke-peter.jpg assets/img/deck3_20th/cards/02_handke-peter.jpg">
+    <figure class="credit-tile" id="bild-handke-peter">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Peter-handke.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/18_handke-peter.jpg" alt="Peter Handke" loading="lazy"></a>
       <figcaption><b>Peter Handke</b><span>Wild + Team Agentur, Universität Salzburg</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-hauptmann-gerhart" data-images="assets/img/deck1_top32/cards/17_hauptmann-gerhart.jpg">
+    <figure class="credit-tile" id="bild-hauptmann-gerhart">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Scolik_-_Gerhart_Hauptmann.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/17_hauptmann-gerhart.jpg" alt="Gerhart Hauptmann" loading="lazy"></a>
       <figcaption><b>Gerhart Hauptmann</b><span>Charles Scolik</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-heine-heinrich" data-images="assets/img/deck1_top32/cards/09_heine-heinrich.jpg">
+    <figure class="credit-tile" id="bild-heine-heinrich">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Heinrich_Heine-Oppenheim.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/09_heine-heinrich.jpg" alt="Heinrich Heine" loading="lazy"></a>
       <figcaption><b>Heinrich Heine</b><span>Moritz Daniel Oppenheim</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-herder-johann-gottfried-von" data-images="assets/img/deck1_top32/cards/31_herder-johann-gottfried-von.jpg">
+    <figure class="credit-tile" id="bild-herder-johann-gottfried-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Johann_Gottfried_Herder_2.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/31_herder-johann-gottfried-von.jpg" alt="Johann Gottfried von Herder" loading="lazy"></a>
       <figcaption><b>Johann Gottfried von Herder</b><span>Anton Graff</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-hoffmann-e-t-a" data-images="assets/img/deck1_top32/cards/08_hoffmann-e-t-a.jpg">
+    <figure class="credit-tile" id="bild-hoffmann-e-t-a">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:E._T._A._Hoffmann,_autorretrato.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/08_hoffmann-e-t-a.jpg" alt="E. T. A. Hoffmann" loading="lazy"></a>
       <figcaption><b>E. T. A. Hoffmann</b><span>E. T. A. Hoffmann</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-hofmannsthal-hugo-von" data-images="assets/img/deck1_top32/cards/10_hofmannsthal-hugo-von.jpg">
+    <figure class="credit-tile" id="bild-hofmannsthal-hugo-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Nicola_Perscheid_-_Hugo_von_Hofmannsthal_1910.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/10_hofmannsthal-hugo-von.jpg" alt="Hugo von Hofmannsthal" loading="lazy"></a>
       <figcaption><b>Hugo von Hofmannsthal</b><span>Nicola Perscheid</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-holderlin-friedrich" data-images="assets/img/deck1_top32/cards/12_holderlin-friedrich.jpg">
+    <figure class="credit-tile" id="bild-holderlin-friedrich">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:FK_Hiemer_-_Friedrich_H%C3%B6lderlin_(Pastell_1792).jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/12_holderlin-friedrich.jpg" alt="Friedrich Hölderlin" loading="lazy"></a>
       <figcaption><b>Friedrich Hölderlin</b><span>Franz Carl Hiemer</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-horvath-odon-von" data-images="assets/img/deck3_20th/cards/18_horvath-odon-von.jpg">
+    <figure class="credit-tile" id="bild-horvath-odon-von">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:%C3%96d%C3%B6n_von_Horv%C3%A1th.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/18_horvath-odon-von.jpg" alt="Ödön von Horváth" loading="lazy"></a>
       <figcaption><b>Ödön von Horváth</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-jandl-ernst" data-images="assets/img/deck3_20th/cards/19_jandl-ernst.jpg">
+    <figure class="credit-tile" id="bild-jandl-ernst">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Ernst_Jandl,_public_reading,_1974-11,_Vienna,_Austria.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/19_jandl-ernst.jpg" alt="Ernst Jandl" loading="lazy"></a>
       <figcaption><b>Ernst Jandl</b><span>[w.]</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-jean-paul" data-images="assets/img/deck1_top32/cards/22_jean-paul.jpg">
+    <figure class="credit-tile" id="bild-jean-paul">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:RichterJP.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/22_jean-paul.jpg" alt="Jean Paul" loading="lazy"></a>
       <figcaption><b>Jean Paul</b><span>Heinrich Pfenninger</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-jelinek-elfriede" data-images="assets/img/deck2_authors/cards/03_jelinek-elfriede.jpg assets/img/deck3_20th/cards/05_jelinek-elfriede.jpg">
+    <figure class="credit-tile" id="bild-jelinek-elfriede">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Elfriede_jelinek_2004_small_cropped.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/03_jelinek-elfriede.jpg" alt="Elfriede Jelinek" loading="lazy"></a>
       <figcaption><b>Elfriede Jelinek</b><span>Ghuengsberg (Wikipedia)</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-johnson-uwe" data-images="assets/img/deck3_20th/cards/08_johnson-uwe.jpg">
+    <figure class="credit-tile" id="bild-johnson-uwe">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:GuestrowUweJohnsonDetail.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/08_johnson-uwe.jpg" alt="Uwe Johnson" loading="lazy"></a>
       <figcaption><b>Uwe Johnson</b><span>MrsMyer</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kafka-franz" data-images="assets/img/deck1_top32/cards/06_kafka-franz.jpg">
+    <figure class="credit-tile" id="bild-kafka-franz">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Franz_Kafka,_1923.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/06_kafka-franz.jpg" alt="Franz Kafka" loading="lazy"></a>
       <figcaption><b>Franz Kafka</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kaleko-mascha" data-images="assets/img/deck2_authors/cards/29_kaleko-mascha.jpg">
+    <figure class="credit-tile" id="bild-kaleko-mascha">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Mascha_Kal%C3%A9ko.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/29_kaleko-mascha.jpg" alt="Mascha Kaléko" loading="lazy"></a>
       <figcaption><b>Mascha Kaléko</b><span>Fotoatelier Ullstein</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kaschnitz-marie-luise" data-images="assets/img/deck2_authors/cards/30_kaschnitz-marie-luise.jpg">
+    <figure class="credit-tile" id="bild-kaschnitz-marie-luise">
       <a class="license-chip" href="https://creativecommons.org/licenses/by/3.0/de/deed.de" target="_blank" rel="noopener">CC BY 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Marie_Luise_Kaschnitz_Bollschweil_Willy_Pragher_1967.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/30_kaschnitz-marie-luise.jpg" alt="Marie Luise Kaschnitz" loading="lazy"></a>
       <figcaption><b>Marie Luise Kaschnitz</b><span>Willy Pragher</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kehlmann-daniel" data-images="assets/img/deck3_20th/cards/29_kehlmann-daniel.jpg">
+    <figure class="credit-tile" id="bild-kehlmann-daniel">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:MKr343518_Daniel_Kehlmann_(Frankfurter_Buchmesse_2023).jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/29_kehlmann-daniel.jpg" alt="Daniel Kehlmann" loading="lazy"></a>
       <figcaption><b>Daniel Kehlmann</b><span>Martin Kraft</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-keller-gottfried" data-images="assets/img/deck1_top32/cards/32_keller-gottfried.jpg">
+    <figure class="credit-tile" id="bild-keller-gottfried">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Gottfried_Keller_1860.jpeg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/32_keller-gottfried.jpg" alt="Gottfried Keller" loading="lazy"></a>
       <figcaption><b>Gottfried Keller</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-keun-irmgard" data-images="assets/img/deck2_authors/cards/18_keun-irmgard.jpg">
+    <figure class="credit-tile" id="bild-keun-irmgard">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Rathausturm_K%C3%B6ln_-_Keun-3437.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/18_keun-irmgard.jpg" alt="Irmgard Keun" loading="lazy"></a>
       <figcaption><b>Irmgard Keun</b><span>Raimond Spekking</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kleist-heinrich-von" data-images="assets/img/deck1_top32/cards/03_kleist-heinrich-von.jpg">
+    <figure class="credit-tile" id="bild-kleist-heinrich-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Heinrich_von_Kleist2.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/03_kleist-heinrich-von.jpg" alt="Heinrich von Kleist" loading="lazy"></a>
       <figcaption><b>Heinrich von Kleist</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kluger-ruth" data-images="assets/img/deck2_authors/cards/19_kluger-ruth.jpg">
+    <figure class="credit-tile" id="bild-kluger-ruth">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Ruth_Kl%C3%BCger_beim_Bayerischen_Buchpreis_2016.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/19_kluger-ruth.jpg" alt="Ruth Klüger" loading="lazy"></a>
       <figcaption><b>Ruth Klüger</b><span>Amrei-Marie</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kracht-christian" data-images="assets/img/deck3_20th/cards/26_kracht-christian.jpg">
+    <figure class="credit-tile" id="bild-kracht-christian">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Christian_Kracht_2025_-_1.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/26_kracht-christian.jpg" alt="Christian Kracht" loading="lazy"></a>
       <figcaption><b>Christian Kracht</b><span>Amrei-Marie</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-kronauer-brigitte" data-images="assets/img/deck2_authors/cards/25_kronauer-brigitte.jpg">
+    <figure class="credit-tile" id="bild-kronauer-brigitte">
       <a class="license-chip" href="https://creativecommons.org/licenses/by/2.0/deed.de" target="_blank" rel="noopener">CC BY 2.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Brigitte_Kronauer_(2005)_cropped.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/25_kronauer-brigitte.jpg" alt="Brigitte Kronauer" loading="lazy"></a>
       <figcaption><b>Brigitte Kronauer</b><span>Blaues Sofa</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-la-roche-sophie-von" data-images="assets/img/deck2_authors/cards/08_la-roche-sophie-von.jpg">
+    <figure class="credit-tile" id="bild-la-roche-sophie-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:LaRocheMS.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/08_la-roche-sophie-von.jpg" alt="Sophie von La Roche" loading="lazy"></a>
       <figcaption><b>Sophie von La Roche</b><span>Georg Oswald May</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-lasker-schuler-else" data-images="assets/img/deck2_authors/cards/06_lasker-schuler-else.jpg">
+    <figure class="credit-tile" id="bild-lasker-schuler-else">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Else_Lasker-Sch%C3%BCler_1875.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/06_lasker-schuler-else.jpg" alt="Else Lasker-Schüler" loading="lazy"></a>
       <figcaption><b>Else Lasker-Schüler</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-le-fort-gertrud-von" data-images="assets/img/deck2_authors/cards/31_le-fort-gertrud-von.jpg">
+    <figure class="credit-tile" id="bild-le-fort-gertrud-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Gertrud_v_Le_Fort_c1935.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/31_le-fort-gertrud-von.jpg" alt="Gertrud von Le Fort" loading="lazy"></a>
       <figcaption><b>Gertrud von Le Fort</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-lessing-gotthold-ephraim" data-images="assets/img/deck1_top32/cards/07_lessing-gotthold-ephraim.jpg">
+    <figure class="credit-tile" id="bild-lessing-gotthold-ephraim">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Gotthold_Ephraim_Lessing.PNG" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/07_lessing-gotthold-ephraim.jpg" alt="Gotthold Ephraim Lessing" loading="lazy"></a>
       <figcaption><b>Gotthold Ephraim Lessing</b><span>Anna Rosina de Gasc</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-mann-klaus" data-images="assets/img/deck3_20th/cards/22_mann-klaus.jpg">
+    <figure class="credit-tile" id="bild-mann-klaus">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Klaus_Mann.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/22_mann-klaus.jpg" alt="Klaus Mann" loading="lazy"></a>
       <figcaption><b>Klaus Mann</b><span>United States 5th Army</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-mann-thomas" data-images="assets/img/deck1_top32/cards/05_mann-thomas.jpg">
+    <figure class="credit-tile" id="bild-mann-thomas">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Thomas_Mann_1929.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/05_mann-thomas.jpg" alt="Thomas Mann" loading="lazy"></a>
       <figcaption><b>Thomas Mann</b><span>Nobel Foundation</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-maron-monika" data-images="assets/img/deck2_authors/cards/22_maron-monika.jpg">
+    <figure class="credit-tile" id="bild-maron-monika">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Monika_Maron,_Frankfurter_Buchmesse_2023.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/22_maron-monika.jpg" alt="Monika Maron" loading="lazy"></a>
       <figcaption><b>Monika Maron</b><span>Elena Ternovaja</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-mayrocker-friederike" data-images="assets/img/deck2_authors/cards/13_mayrocker-friederike.jpg assets/img/deck3_20th/cards/28_mayrocker-friederike.jpg">
+    <figure class="credit-tile" id="bild-mayrocker-friederike">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/2.0/deed.de" target="_blank" rel="noopener">CC BY-SA 2.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Mayr%C3%B6cker_Friederike-5784_(17828490214).jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/13_mayrocker-friederike.jpg" alt="Friederike Mayröcker" loading="lazy"></a>
       <figcaption><b>Friederike Mayröcker</b><span>Franz Johann Morgenbesser</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-muller-heiner" data-images="assets/img/deck3_20th/cards/13_muller-heiner.jpg">
+    <figure class="credit-tile" id="bild-muller-heiner">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-1989-1104-047,_Berlin,_Demonstration,_Rede_Heiner_M%C3%BCller.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/13_muller-heiner.jpg" alt="Heiner Müller" loading="lazy"></a>
       <figcaption><b>Heiner Müller</b><span>Bundesarchiv, Hubert Link</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-muller-herta" data-images="assets/img/deck2_authors/cards/07_muller-herta.jpg assets/img/deck3_20th/cards/17_muller-herta.jpg">
+    <figure class="credit-tile" id="bild-muller-herta">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Herta_M%C3%BCller_Brucknerhaus_Linz_2025_BHO-4188.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/07_muller-herta.jpg" alt="Herta Müller" loading="lazy"></a>
       <figcaption><b>Herta Müller</b><span>Bernhard Holub</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-musil-robert" data-images="assets/img/deck1_top32/cards/25_musil-robert.jpg">
+    <figure class="credit-tile" id="bild-musil-robert">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Musil.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/25_musil-robert.jpg" alt="Robert Musil" loading="lazy"></a>
       <figcaption><b>Robert Musil</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-nietzsche-friedrich" data-images="assets/img/deck1_top32/cards/21_nietzsche-friedrich.jpg">
+    <figure class="credit-tile" id="bild-nietzsche-friedrich">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Nietzsche187a.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/21_nietzsche-friedrich.jpg" alt="Friedrich Nietzsche" loading="lazy"></a>
       <figcaption><b>Friedrich Nietzsche</b><span>Friedrich Hermann Hartmann</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-ozdamar-emine-sevgi" data-images="assets/img/deck2_authors/cards/20_ozdamar-emine-sevgi.jpg">
+    <figure class="credit-tile" id="bild-ozdamar-emine-sevgi">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Emine_Sevgi_%C3%96zdamar_2021_02.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/20_ozdamar-emine-sevgi.jpg" alt="Emine Sevgi Özdamar" loading="lazy"></a>
       <figcaption><b>Emine Sevgi Özdamar</b><span>Amrei-Marie</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-rilke-rainer-maria" data-images="assets/img/deck1_top32/cards/13_rilke-rainer-maria.jpg">
+    <figure class="credit-tile" id="bild-rilke-rainer-maria">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Rainer_Maria_Rilke_1900.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/13_rilke-rainer-maria.jpg" alt="Rainer Maria Rilke" loading="lazy"></a>
       <figcaption><b>Rainer Maria Rilke</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-roggla-kathrin" data-images="assets/img/deck2_authors/cards/23_roggla-kathrin.jpg">
+    <figure class="credit-tile" id="bild-roggla-kathrin">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Kathrin_R%C3%B6ggla_2023_-_3.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/23_roggla-kathrin.jpg" alt="Kathrin Röggla" loading="lazy"></a>
       <figcaption><b>Kathrin Röggla</b><span>Amrei-Marie</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-sachs-nelly" data-images="assets/img/deck2_authors/cards/21_sachs-nelly.jpg">
+    <figure class="credit-tile" id="bild-sachs-nelly">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Nelly_Sachs_1910_repaired.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/21_sachs-nelly.jpg" alt="Nelly Sachs" loading="lazy"></a>
       <figcaption><b>Nelly Sachs</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-schiller-friedrich" data-images="assets/img/deck1_top32/cards/02_schiller-friedrich.jpg">
+    <figure class="credit-tile" id="bild-schiller-friedrich">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Friedrich_Schiller_by_Ludovike_Simanowiz.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/02_schiller-friedrich.jpg" alt="Friedrich Schiller" loading="lazy"></a>
       <figcaption><b>Friedrich Schiller</b><span>Ludovike Simanowiz</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-schlegel-dorothea-von" data-images="assets/img/deck2_authors/cards/32_schlegel-dorothea-von.jpg">
+    <figure class="credit-tile" id="bild-schlegel-dorothea-von">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Dorothea_Schlegel.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/32_schlegel-dorothea-von.jpg" alt="Dorothea von Schlegel" loading="lazy"></a>
       <figcaption><b>Dorothea von Schlegel</b><span>Anton Graff</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-schmidt-arno" data-images="assets/img/deck3_20th/cards/10_schmidt-arno.jpg">
+    <figure class="credit-tile" id="bild-schmidt-arno">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:KueheinHalbtrauer.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/10_schmidt-arno.jpg" alt="Arno Schmidt" loading="lazy"></a>
       <figcaption><b>Arno Schmidt</b><span>Jens Rusch</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-schnitzler-arthur" data-images="assets/img/deck1_top32/cards/27_schnitzler-arthur.jpg">
+    <figure class="credit-tile" id="bild-schnitzler-arthur">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Arthur_Schnitzler_von_Carl_Pietzner.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/27_schnitzler-arthur.jpg" alt="Arthur Schnitzler" loading="lazy"></a>
       <figcaption><b>Arthur Schnitzler</b><span>Carl Pietzner</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-seghers-anna" data-images="assets/img/deck2_authors/cards/04_seghers-anna.jpg assets/img/deck3_20th/cards/09_seghers-anna.jpg">
+    <figure class="credit-tile" id="bild-seghers-anna">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Anna_Seghers_(Bundesarchiv-Bild_183-F0114-0204-003)_%E2%80%93_retouched_by_Carschten.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/04_seghers-anna.jpg" alt="Anna Seghers" loading="lazy"></a>
       <figcaption><b>Anna Seghers</b><span>Bundesarchiv, Christa Hochneder</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-stifter-adalbert" data-images="assets/img/deck1_top32/cards/16_stifter-adalbert.jpg">
+    <figure class="credit-tile" id="bild-stifter-adalbert">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Adalbert_Stifter_photo.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/16_stifter-adalbert.jpg" alt="Adalbert Stifter" loading="lazy"></a>
       <figcaption><b>Adalbert Stifter</b><span>unbekannt</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-strau-botho" data-images="assets/img/deck3_20th/cards/16_strau-botho.jpg">
+    <figure class="credit-tile" id="bild-strau-botho">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Oliver_Mark_-_Botho_Strau%C3%9F,_Uckermark_2007_(2).jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/16_strau-botho.jpg" alt="Botho Strauß" loading="lazy"></a>
       <figcaption><b>Botho Strauß</b><span>Oliver Mark</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-tawada-yoko" data-images="assets/img/deck2_authors/cards/26_tawada-yoko.jpg">
+    <figure class="credit-tile" id="bild-tawada-yoko">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:YokoTawadaP1040207.JPG" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/26_tawada-yoko.jpg" alt="Yōko Tawada" loading="lazy"></a>
       <figcaption><b>Yōko Tawada</b><span>Manfred Sause</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-tieck-ludwig" data-images="assets/img/deck1_top32/cards/19_tieck-ludwig.jpg">
+    <figure class="credit-tile" id="bild-tieck-ludwig">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Ludwig_Tieck.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/19_tieck-ludwig.jpg" alt="Ludwig Tieck" loading="lazy"></a>
       <figcaption><b>Ludwig Tieck</b><span>Nach Karl Joseph Stieler</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-varnhagen-rahel" data-images="assets/img/deck2_authors/cards/17_varnhagen-rahel.jpg">
+    <figure class="credit-tile" id="bild-varnhagen-rahel">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://de.wikipedia.org/wiki/Datei:Daffinger_litho_g_kuestner.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/17_varnhagen-rahel.jpg" alt="Rahel Varnhagen" loading="lazy"></a>
       <figcaption><b>Rahel Varnhagen</b><span>Gottfried Küstner</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-walser-martin" data-images="assets/img/deck3_20th/cards/23_walser-martin.jpg">
+    <figure class="credit-tile" id="bild-walser-martin">
       <a class="license-chip" href="https://creativecommons.org/publicdomain/zero/1.0/deed.de" target="_blank" rel="noopener">CC0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Martin_Walser_Frankfurter_Buchmesse_2013_1.JPG" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/23_walser-martin.jpg" alt="Martin Walser" loading="lazy"></a>
       <figcaption><b>Martin Walser</b><span>Lesekreis</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-weiss-peter" data-images="assets/img/deck3_20th/cards/12_weiss-peter.jpg">
+    <figure class="credit-tile" id="bild-weiss-peter">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Peter_Weiss_1982.jpg" target="_blank" rel="noopener"><img src="assets/img/deck3_20th/cards/12_weiss-peter.jpg" alt="Peter Weiss" loading="lazy"></a>
       <figcaption><b>Peter Weiss</b><span>Dietbert Keßler</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-wieland-christoph-martin" data-images="assets/img/deck1_top32/cards/28_wieland-christoph-martin.jpg">
+    <figure class="credit-tile" id="bild-wieland-christoph-martin">
       <span class="license-chip pd">Gemeinfrei</span>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Weimar_Anna_Amalia_Bibliothek@C.M._Wieland.JPG" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/28_wieland-christoph-martin.jpg" alt="Christoph Martin Wieland" loading="lazy"></a>
       <figcaption><b>Christoph Martin Wieland</b><span>Ferdinand Jagemann</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-wolf-christa" data-images="assets/img/deck1_top32/cards/30_wolf-christa.jpg assets/img/deck2_authors/cards/02_wolf-christa.jpg assets/img/deck3_20th/cards/04_wolf-christa.jpg">
+    <figure class="credit-tile" id="bild-wolf-christa">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/3.0/de/deed.de" target="_blank" rel="noopener">CC BY-SA 3.0 de</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_183-B0509-0010-005,_Christa_Wolf.jpg" target="_blank" rel="noopener"><img src="assets/img/deck1_top32/cards/30_wolf-christa.jpg" alt="Christa Wolf" loading="lazy"></a>
       <figcaption><b>Christa Wolf</b><span>Bundesarchiv, Irene Eckleben</span></figcaption>
     </figure>
-    <figure class="credit-tile" id="bild-zeh-juli" data-images="assets/img/deck2_authors/cards/24_zeh-juli.jpg">
+    <figure class="credit-tile" id="bild-zeh-juli">
       <a class="license-chip" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de" target="_blank" rel="noopener">CC BY-SA 4.0</a>
       <a class="credit-pic" href="https://commons.wikimedia.org/wiki/File:Juli_Zeh_-_2018286113231_2018-10-13_Buchmesse_-_1D_X_MK_II_-_0207_-_B70I4023.jpg" target="_blank" rel="noopener"><img src="assets/img/deck2_authors/cards/24_zeh-juli.jpg" alt="Juli Zeh" loading="lazy"></a>
       <figcaption><b>Juli Zeh</b><span>Sven Mandel</span></figcaption>
@@ -3332,21 +3287,24 @@
 </section>
 
 <script>
-/* Klick auf ein Kartenporträt in den Decks springt zu dessen Bildnachweis. */
+/* Karten in den Decks zum Umdrehen: jede Karte bekommt die Rueckseite ihres Decks
+   (gleiche Flip-Mechanik wie die Hero-Karten oben). Die Deck-Abschnitte selbst bleiben
+   so, wie die Generatoren sie erzeugen. */
 (function(){
-  var tileByImage = {};
-  document.querySelectorAll('.credit-tile').forEach(function(tile){
-    tile.dataset.images.split(' ').forEach(function(src){ tileByImage[src] = tile; });
-  });
-  document.querySelectorAll('.deck-full .photo img').forEach(function(img){
-    var tile = tileByImage[img.getAttribute('src')];
-    if(!tile) return;
-    img.title = 'Bildnachweis anzeigen';
-    img.addEventListener('click', function(){
-      tile.scrollIntoView({ behavior:'smooth', block:'start' });
-      tile.classList.remove('flash');
-      void tile.offsetWidth;  // Animation neu starten
-      tile.classList.add('flash');
+  document.querySelectorAll('.deck-full').forEach(function(deck){
+    var slug = [].find.call(deck.classList, function(c){ return c.indexOf('deck-') === 0 && c !== 'deck-full'; });
+    if(!slug) return;
+    var title = deck.querySelector('h3') ? deck.querySelector('h3').textContent : '';
+    deck.querySelectorAll('.sheet > .card').forEach(function(card){
+      var flip = document.createElement('div');
+      flip.className = 'flip-card';
+      flip.innerHTML =
+        '<div class="flip-card-inner"><div class="flip-front"></div><div class="flip-back">' +
+        '<div class="card-back"><img src="assets/card-back-' + slug.slice(5) + '.png" alt="Kartenrückseite ' +
+        title + '" loading="lazy"></div></div></div>';
+      card.parentNode.insertBefore(flip, card);
+      flip.querySelector('.flip-front').appendChild(card);
+      flip.addEventListener('click', function(){ flip.classList.toggle('flipped'); });
     });
   });
 })();
