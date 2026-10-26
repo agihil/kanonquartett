@@ -314,10 +314,14 @@
     display:inline-block;
     position:relative;
     top:0.16em;
+    /* Q hohl wie "Quartett" im Logo; ausdruecklich gesetzt, denn Safari nimmt Inline-Block-Kinder
+       aus background-clip:text heraus (Q hohl), Chrome nicht (Q mit Verlauf) */
+    color:#fff8ec;
+    -webkit-text-fill-color:#fff8ec;
   }
   .category-bar{
     background:#fff8ec;
-    color:var(--accent);
+    color:var(--ink);
     border:1.5px solid var(--accent);
     border-radius:11px;
     padding:6px 6px 6px 35px;
@@ -330,8 +334,9 @@
   }
 
   .photo{
-    flex:1 1 auto;
-    min-height:0;
+    /* fester Bildrahmen im Seitenverhaeltnis der exportierten Bilder (1000 x 648),
+       sonst schneidet object-fit je nach Textumbruch den Bildnachweis am Rand ab */
+    flex:0 0 auto;
     margin:8px 0 6px;
     border:2.3px solid var(--accent);
     border-radius:3px;
@@ -340,13 +345,14 @@
   }
   .photo img{
     width:100%;
-    height:100%;
+    height:auto;
+    aspect-ratio:1000 / 648;
     object-fit:cover;
     display:block;
   }
   .photo-placeholder{
     width:100%;
-    height:100%;
+    aspect-ratio:1000 / 648;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -454,6 +460,10 @@
     display:block;
     width:max-content;
     margin:1.3rem auto 0;
+  }
+  /* Download-Knopf direkt unter der Deck-Ueberschrift */
+  .content-section .deck-full > .deck-download{
+    margin:-0.9rem auto 2rem;
   }
 
   hr.section-rule{
@@ -753,6 +763,7 @@
 
   <div class="deck-full deck-authors" id="deck-authors">
     <h3>Eine andere Top 32</h3>
+    <a class="deck-button deck-download" href="downloads/kanon-quartett-eine-andere-top-32.pdf" download>Deck herunterladen</a>
     <div class="sheet">
       <div class="card deck-authors">
         <span class="card-no">01/32</span>
@@ -1462,6 +1473,7 @@
 
   <div class="deck-full deck-top32" id="deck-top32">
     <h3>Top 32</h3>
+    <a class="deck-button deck-download" href="downloads/kanon-quartett-top-32.pdf" download>Deck herunterladen</a>
     <div class="sheet">
       <div class="card deck-top32">
         <span class="card-no">01/32</span>
@@ -2171,6 +2183,7 @@
 
   <div class="deck-full deck-20th" id="deck-20th">
     <h3>Das 20. Jahrhundert</h3>
+    <a class="deck-button deck-download" href="downloads/kanon-quartett-das-20-jahrhundert.pdf" download>Deck herunterladen</a>
     <div class="sheet">
       <div class="card deck-20th">
         <span class="card-no">01/32</span>
