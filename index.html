@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kanon-Quartett (KQ)</title>
+<title>Kanon-Quartett</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Titan+One&display=swap" rel="stylesheet">
 <style>
@@ -433,7 +433,7 @@
     box-shadow:0 6px 14px rgba(0,0,0,0.22);
   }
 
-  /* ---- Inhalts-Sektionen (Anleitung / About) ---- */
+  /* ---- Inhalts-Sektionen (Spielanleitung / Druckanleitung / About) ---- */
   .content-section{
     max-width:640px;
     margin:0 auto;
@@ -607,8 +607,10 @@
   }
   @media (max-width:520px){
     .sheet{ grid-template-columns:1fr; justify-items:center; }
-    .site-nav{ gap:0; }
-    .site-nav a{ padding:0.4rem 0.5rem; font-size:0.6rem; }
+    /* zu schmal für alle Punkte: seitlich wischbar, ohne die ersten Punkte links abzuschneiden */
+    .site-nav{ gap:0; justify-content:safe center; overflow-x:auto; scrollbar-width:none; }
+    .site-nav::-webkit-scrollbar{ display:none; }
+    .site-nav a{ padding:0.4rem 0.5rem; font-size:0.6rem; flex-shrink:0; white-space:nowrap; }
   }
 </style>
 </head>
@@ -616,18 +618,20 @@
 
 <nav class="site-nav">
   <a href="#start">Start</a>
-  <a href="#anleitung">Anleitung</a>
-  <a href="#about">About this</a>
+  <a href="#spielanleitung">Spielanleitung</a>
+  <a href="#druckanleitung">Druckanleitung</a>
   <a href="#decks">Decks</a>
   <a href="#bildnachweise">Bildnachweise</a>
+  <a href="#about">About this</a>
 </nav>
 
 <nav class="dot-nav">
   <a href="#start"><span class="dot"></span><span class="label">Start</span></a>
-  <a href="#anleitung"><span class="dot"></span><span class="label">Anleitung</span></a>
-  <a href="#about"><span class="dot"></span><span class="label">About this</span></a>
+  <a href="#spielanleitung"><span class="dot"></span><span class="label">Spielanleitung</span></a>
+  <a href="#druckanleitung"><span class="dot"></span><span class="label">Druckanleitung</span></a>
   <a href="#decks"><span class="dot"></span><span class="label">Decks</span></a>
   <a href="#bildnachweise"><span class="dot"></span><span class="label">Bildnachweise</span></a>
+  <a href="#about"><span class="dot"></span><span class="label">About this</span></a>
 </nav>
 
 <section class="hero" id="start">
@@ -745,15 +749,15 @@
 
 <hr class="section-rule">
 
-<section class="content-section" id="anleitung">
-  <h2>Anleitung</h2>
+<section class="content-section" id="spielanleitung">
+  <h2>Spielanleitung</h2>
   <a class="deck-button" href="#" download>Anleitung herunterladen</a>
 </section>
 
 <hr class="section-rule">
 
-<section class="content-section" id="about">
-  <h2>About this</h2>
+<section class="content-section" id="druckanleitung">
+  <h2>Druckanleitung</h2>
 </section>
 
 <hr class="section-rule">
@@ -3299,6 +3303,12 @@
   </div>
 </section>
 
+<hr class="section-rule">
+
+<section class="content-section" id="about">
+  <h2>About this</h2>
+</section>
+
 <script>
 /* Karten in den Decks zum Umdrehen: jede Karte bekommt die Rueckseite ihres Decks
    (gleiche Flip-Mechanik wie die Hero-Karten oben). Die Deck-Abschnitte selbst bleiben
@@ -3330,15 +3340,22 @@
   if(!links.length || !sections.length) return;
   var linkById = {};
   links.forEach(function(a){ linkById[a.getAttribute('href').slice(1)] = a; });
-  var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      var link = linkById[entry.target.id];
-      if(!link || !entry.isIntersecting) return;
-      links.forEach(function(a){ a.classList.remove('active'); });
-      link.classList.add('active');
+  /* aktiv ist der letzte Abschnitt, der 40 % unter den oberen Rand gescrollt ist; am Seitenende
+     der letzte Abschnitt, auch wenn er zu kurz ist, um so weit nach oben zu kommen */
+  function update(){
+    var current = sections[0];
+    var atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    sections.forEach(function(s){
+      if(atEnd || s.getBoundingClientRect().top <= window.innerHeight * 0.4) current = s;
     });
-  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
-  sections.forEach(function(s){ observer.observe(s); });
+    var link = linkById[current.id];
+    if(!link) return;
+    links.forEach(function(a){ a.classList.remove('active'); });
+    link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 })();
 </script>
 
